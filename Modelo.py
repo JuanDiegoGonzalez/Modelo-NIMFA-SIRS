@@ -94,37 +94,6 @@ class Modelo:
             for i in self.history:
                 f.write(str(i) + "\n")
 
-    # Funcion que grafica la evolcion de la infeccion en el tiempo
-    def plotTime(self):
-        T = np.arange(0, self.iterations + 1, 1)
-        S = [sum(map(lambda x: x == 0.5, i)) for i in self.history]
-        I = [sum(map(lambda x: x == 1, i)) for i in self.history]
-        R = [sum(map(lambda x: x == 0, i)) for i in self.history]
-
-        T_S_Spline = make_interp_spline(T, S)
-        T_I_Spline = make_interp_spline(T, I)
-        T_R_Spline = make_interp_spline(T, R)
-
-        T_ = np.linspace(T.min(), T.max(), 500)
-
-        S_ = T_S_Spline(T_)
-        I_ = T_I_Spline(T_)
-        R_ = T_R_Spline(T_)
-
-        plt.figure()
-
-        plt.plot(T_, S_, "b", label="Susceptibles")
-        plt.plot(T_, I_, "c", label="Infectados")
-        plt.plot(T_, R_, "g", label="Recuperados")
-
-        plt.legend(loc='upper right')
-        plt.grid(1)
-        plt.xlabel('Iteracion')
-        plt.ylabel('Estado de los nodos')
-        plt.xticks(np.arange(min(T), max(T)+1, (len(T)-1)/10))
-
-        plt.show()
-
 # Funcion que ejecuta un modelo de prueba en caso de que este archivo sea ejecutado
 if __name__ == '__main__':
     path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'Grafos Guardados/6Nodos.json')

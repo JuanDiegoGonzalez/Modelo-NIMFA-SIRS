@@ -28,8 +28,11 @@ class DialogoCrearGrafo:
         return valid
 
     def send(self):
-        if 2 <= int(self.entry.get()) <= 100:
-            self.val = self.entry.get()
-            self.top.destroy()
+        if self.entry.get() != "":
+            if 2 <= int(self.entry.get()) <= 100:
+                self.val = self.entry.get()
+                self.top.destroy()
+            else:
+                messagebox.showerror('Error', "El valor ingresado esta fuera de rango (entre 2 y 100)")
         else:
-            messagebox.showerror('Error', "El valor ingresado esta fuera de rango (entre 2 y 100)")
+            self.top.bell()
