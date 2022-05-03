@@ -5,14 +5,16 @@
 # ----------------------------------------------------
 
 # -------------------- Imports -----------------------
-import os, json, random
-import networkx as nx
+
+
 import numpy as np
+import networkx as nx
+import os, json, random
 import matplotlib as mpl
 
 from math import dist, inf
+from tkinter import messagebox
 from random import uniform, seed
-from matplotlib import pyplot as plt
 
 # -------------------- Variables globales -----------------------
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
@@ -44,17 +46,21 @@ class Grafo:
         # Si se carga el grafo desde un archivo JSON
         if mode == 1:
             self.pos = {}
-            with open(init) as json_file:
-                self.graph_data = json.load(json_file)
-                self.n = len(self.graph_data)
-                self.adjM = np.zeros((self.n, self.n), int)
-                self.nodes = self.graph_data
-                for i in range(self.n):
-                    self.pos[i] = self.graph_data[i]['pos']
-                    self.adjM[i, :] = self.graph_data[i]["adjList"]
-                    if self.graph_data[i]["value"] == 1:
-                        self.initialInfected = i
-                self.name = init
+            try:
+                with open(init) as json_file:
+                    self.graph_data = json.load(json_file)
+                    self.n = len(self.graph_data)
+                    self.adjM = np.zeros((self.n, self.n), int)
+                    self.nodes = self.graph_data
+                    for i in range(self.n):
+                        self.pos[i] = self.graph_data[i]['pos']
+                        self.adjM[i, :] = self.graph_data[i]["adjList"]
+                        if self.graph_data[i]["value"] == 1:
+                            self.initialInfected = i
+                    self.name = init
+            except Exception:
+                messagebox.showerror('Error', "El archivo seleccionado no tiene un formato valido")
+                return
 
         # O si se genera un grafo nuevo (aleatorio)
         else:
@@ -150,6 +156,6 @@ if __name__=='__main__':
     print("\nEsta es una ejecucion de prueba para el grafo.\n")
     print("Para ejecutar la aplicacion completa debe ejecutar el archivo \"main.py\".")
 
-    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'Grafos Guardados')
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../Grafos Guardados')
     g = Grafo(2, str(10))
     h = Grafo(2, str(10))

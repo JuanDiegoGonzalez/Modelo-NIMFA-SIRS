@@ -15,9 +15,9 @@ from scipy.interpolate import make_interp_spline
 from tkinter.filedialog import askopenfilename, asksaveasfile
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg)
 
-from Grafo import Grafo
-from Modelo import Modelo
-from DialogoCrearGrafo import DialogoCrearGrafo
+from Modelo.utils.Grafo import Grafo
+from Modelo.utils.ModeloNimfaSirs import Modelo
+from Modelo.utils.DialogoCrearGrafo import DialogoCrearGrafo
 
 
 # -------------------- Clase ventana principal --------------------
@@ -317,11 +317,14 @@ class Ventana:
         if filename:
             self.Graph = Grafo(1, filename, self)
 
-            self.fig = plt.figure(figsize=(8, 5), dpi=100)
-            self.canvas = FigureCanvasTkAgg(self.fig, self.window)
-            self.canvas.get_tk_widget().place(x=300 * self.ratio_ventana, y=0 * self.ratio_ventana)
+            if len(self.Graph.nodes) > 0:
+                self.fig = plt.figure(figsize=(8, 5), dpi=100)
+                self.canvas = FigureCanvasTkAgg(self.fig, self.window)
+                self.canvas.get_tk_widget().place(x=300 * self.ratio_ventana, y=0 * self.ratio_ventana)
 
-            self.grafica()
+                self.grafica()
+            else:
+                self.Graph = None
 
     # Funcion que guarda/exporta en un archivo el grafo cargado actualmente
     def guardarGrafo(self):

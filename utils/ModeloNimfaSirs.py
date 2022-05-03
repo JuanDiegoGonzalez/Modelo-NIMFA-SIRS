@@ -5,16 +5,13 @@
 # -------------------------------------------------------------------------------------------------------------
 
 # -------------------- Imports -----------------------
-import os, time
 import random
-
+import os, time
 import numpy as np
 
-from Grafo import Grafo
 from random import seed
-from pprint import pprint
-from matplotlib import pyplot as plt
-from scipy.interpolate import make_interp_spline
+
+from Modelo.utils.Grafo import Grafo
 
 # -------------------- Variables globales -----------------------
 rngSeed = 32
@@ -61,7 +58,6 @@ class Modelo:
     def run(self):
         self.t = 0
         while self.t < self.iterations:
-            pprint(self.graph.graph_data)
 
             for i in range(self.n):
                 # Nodos susceptibles
@@ -96,7 +92,7 @@ class Modelo:
 
 # Funcion que ejecuta un modelo de prueba en caso de que este archivo sea ejecutado
 if __name__ == '__main__':
-    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'Grafos Guardados/6Nodos.json')
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../Grafos Guardados/6Nodos.json')
 
     # Se elimina el virus (ver nodo #3)
     g = Grafo(1, path)
