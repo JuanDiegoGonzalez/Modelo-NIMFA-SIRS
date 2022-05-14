@@ -1,6 +1,6 @@
 # -------------------------------------------------------------------------------------------------------------
 # Modelo epidemiologico SIRS implementado con un modelo NIMFA
-# Realizado por: Juan Diego Gonzalez Gomez - 201911031
+# Realizado por: Juan Diego Gonzalez Gomez
 # Basado en el modelo SIS de: https://github.com/MartinGalvanCastro/NimdaModel
 # -------------------------------------------------------------------------------------------------------------
 

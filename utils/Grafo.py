@@ -1,6 +1,6 @@
 # ----------------------------------------------------
 # Generador de grafos
-# Realizado por: Juan Diego Gonzalez Gomez - 201911031
+# Realizado por: Juan Diego Gonzalez Gomez
 # Adaptado y modificado de: https://github.com/MartinGalvanCastro/NimdaModel
 # ----------------------------------------------------
 

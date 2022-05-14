@@ -22,7 +22,7 @@ from Modelo.utils.DialogoCrearGrafo import DialogoCrearGrafo
 
 # -------------------- Clase ventana principal --------------------
 class Ventana:
-    # Funcion que declara y configura los elementos de la ventana principal
+    # Función que declara y configura los elementos de la ventana principal
     def __init__(self):
         # ---------- Declaracion de la ventana principal ----------
         self.window = tk.Tk()
