@@ -10,6 +10,7 @@ import networkx as nx
 import matplotlib as mpl
 
 from tkinter import messagebox
+from matplotlib.lines import Line2D
 from matplotlib import pyplot as plt
 from scipy.interpolate import make_interp_spline
 from tkinter.filedialog import askopenfilename, asksaveasfile
@@ -45,6 +46,16 @@ class Ventana:
         self.window.title('Modelo NIMFA - SIRS')
         self.window.config(bg='white')
         self.window.resizable(False, False)
+
+        # ---------- Configuración de atributos de las gráficas ----------
+        self.colors = mpl.colors.Normalize(vmin=0, vmax=1, clip=True)
+        self.cmap = plt.cm.coolwarm
+        self.custom_lines = [Line2D([0], [0], marker='o', color=self.cmap(.5), markerfacecolor=self.cmap(.5),
+                                    markersize=15, label='Susceptible'),
+                             Line2D([0], [0], marker='o', color=self.cmap(1.), markerfacecolor=self.cmap(1.),
+                                    markersize=15, label='Infectado'),
+                             Line2D([0], [0], marker='o', color=self.cmap(0.), markerfacecolor=self.cmap(0.),
+                                    markersize=15, label='Recuperado')]
 
         # ---------- Declaración de objetos (grafo y modelo) ----------
         self.Graph = None
@@ -412,7 +423,7 @@ class Ventana:
     def grafica(self):
         plt.clf()
 
-        mapper = mpl.cm.ScalarMappable(norm=self.Graph.colors, cmap=mpl.cm.coolwarm)
+        mapper = mpl.cm.ScalarMappable(norm=self.colors, cmap=self.cmap)
         nx.draw(self.Graph.G,
                 self.Graph.pos,
                 node_color=[mapper.to_rgba(self.Graph.G.nodes[i]['value'])
@@ -421,7 +432,8 @@ class Ventana:
                 font_color='black',
                 edge_cmap=mpl.cm.coolwarm,
                 vmin=0, vmax=1)
-        plt.colorbar(mapper, shrink=0.75)
+
+        plt.legend(handles=self.custom_lines, labelspacing=1.2)
 
         if self.Model:
             if self.Model.t > 0:

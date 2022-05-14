@@ -35,7 +35,6 @@ class Grafo:
         self.graph_data = None
         self.nodes = []
         self.name = ""
-        self.colors = mpl.colors.Normalize(vmin=0, vmax=1, clip=True)
         self.n = 0
 
         # ---------- Creación del grafo ----------

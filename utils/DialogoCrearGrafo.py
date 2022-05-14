@@ -8,6 +8,7 @@ import tkinter as tk
 
 from tkinter import messagebox
 
+
 class DialogoCrearGrafo:
     def __init__(self, parent):
         self.val = None
