@@ -1,7 +1,7 @@
 # -------------------------------------------------------------------------------------------------------------
-# Modelo epidemiologico SIRS implementado con un modelo NIMFA
-# Realizado por: Juan Diego Gonzalez Gomez
-# Basado en el modelo SIS de: https://github.com/MartinGalvanCastro/NimdaModel
+# Modelo epidemiológico SIRS implementado con un modelo NIMFA
+# Realizado por: Juan Diego González Gómez
+# Inspirado en el modelo SIS de: https://github.com/MartinGalvanCastro/NimdaModel
 # -------------------------------------------------------------------------------------------------------------
 
 # -------------------- Imports -----------------------
@@ -20,7 +20,7 @@ seed(rngSeed)
 
 # -------------------- Clase que representa el modelo --------------------
 class Modelo:
-    # Funcion que declara e inicializa las variables del modelo
+    # Función que declara e inicializa las variables del modelo
     def __init__(self, adjMatrix: np.array, graph: Grafo, parametros):
         self.adjMatrix = adjMatrix
         self.n = len(self.adjMatrix)
@@ -54,7 +54,7 @@ class Modelo:
     def back(self):
         self.control = 1
 
-    # Funcion que ejecuta la simulacion del modelo
+    # Función que ejecuta la simulación del modelo
     def run(self):
         self.t = 0
         while self.t < self.iterations:
@@ -84,13 +84,13 @@ class Modelo:
 
         self.exportarDatos()
 
-    # Funcion que exporta lso resultados del modelo (la variable self.history)
+    # Función que exporta los resultados del modelo (la variable self.history)
     def exportarDatos(self):
         with open("Modelos Guardados/{}nodos.txt".format(self.n), 'w', encoding='utf-8') as f:
             for i in self.history:
                 f.write(str(i) + "\n")
 
-# Funcion que ejecuta un modelo de prueba en caso de que este archivo sea ejecutado
+# Función que ejecuta un modelo de prueba en caso de que este archivo sea ejecutado
 if __name__ == '__main__':
     path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../Grafos Guardados/6Nodos.json')
 
@@ -108,8 +108,7 @@ if __name__ == '__main__':
 
     model.run()
 
-    print("\nEsta fue una ejecucion de prueba para el modelo.\n")
-    print("Para ejecutar la aplicacion completa debe ejecutar el archivo \"main.py\".")
+    print("\nEsta fue una ejecución de prueba para el modelo.\n")
+    print("Para ejecutar la aplicación completa debe ejecutar el archivo \"main.py\".")
 
     model.plotTime()
-

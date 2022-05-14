@@ -1,6 +1,6 @@
 # ----------------------------------------------------
-# Interfaz principal de la aplicacion
-# Realizado por: Juan Diego Gonzalez Gomez
+# Interfaz principal de la aplicación
+# Realizado por: Juan Diego González Gómez
 # ----------------------------------------------------
 
 # -------------------- Imports -----------------------
@@ -24,10 +24,10 @@ from Modelo.utils.DialogoCrearGrafo import DialogoCrearGrafo
 class Ventana:
     # Función que declara y configura los elementos de la ventana principal
     def __init__(self):
-        # ---------- Declaracion de la ventana principal ----------
+        # ---------- Declaración de la ventana principal ----------
         self.window = tk.Tk()
 
-        # ---------- Parametros de la ventana ----------
+        # ---------- Parámetros de la ventana ----------
         w = 1100
         h = 750
 
@@ -39,24 +39,24 @@ class Ventana:
 
         self.ratio_ventana = 0.85 if hs < 1000 else 1
 
-        # ---------- Configuracion de la ventana ----------
+        # ---------- Configuración de la ventana ----------
         self.window.geometry('%dx%d+%d+%d' % (
             w * self.ratio_ventana, h * self.ratio_ventana, x * self.ratio_ventana, y * self.ratio_ventana))
         self.window.title('Modelo NIMFA - SIRS')
         self.window.config(bg='white')
         self.window.resizable(False, False)
 
-        # ---------- Declaracion de objetos (grafo y modelo) ----------
+        # ---------- Declaración de objetos (grafo y modelo) ----------
         self.Graph = None
         self.Model = None
 
-        # ---------- Configuracion de los elementos de la ventana principal ----------
+        # ---------- Configuración de los elementos de la ventana principal ----------
         self.configurarVentana()
 
-        # ---------- Ejecucion del programa ----------
+        # ---------- Ejecución del programa ----------
         self.window.mainloop()
 
-    # Funcion que configura los frames de la ventana principal y sus elementos
+    # Función que configura los frames de la ventana principal y sus elementos
     def configurarVentana(self):
         # ---------- Frame superior izquierdo ----------
         self.frame1 = tk.Frame(master=self.window)
@@ -86,12 +86,12 @@ class Ventana:
         self.frame2.config(bg="#A9CCE3", width=300 * self.ratio_ventana, height=300 * self.ratio_ventana,
                            relief=tk.RIDGE, bd=8)
 
-        # Boton nueva ejecucion
-        self.nueva_ejecucion = tk.Button(master=self.frame2, text='Nueva ejecucion', command=self.nuevaEjecucion,
+        # Boton nueva ejecución
+        self.nueva_ejecucion = tk.Button(master=self.frame2, text='Nueva ejecución', command=self.nuevaEjecucion,
                                          bg='#A9CCE3', font=('math', 15, 'bold italic'), width=20)
 
-        # Boton mostrar grafica de evolucion
-        self.mostrar_grafica_evolucion = tk.Button(master=self.frame2, text='Gráfica de evolucion',
+        # Boton mostrar gráfica de evolución
+        self.mostrar_grafica_evolucion = tk.Button(master=self.frame2, text='Gráfica de evolución',
                                                    command=self.conInterpolacion,
                                                    bg='#A9CCE3', font=('math', 15, 'bold italic'), width=20)
 
@@ -132,7 +132,7 @@ class Ventana:
         self.frame4.config(bg="#A9CCE3", width=500 * self.ratio_ventana, height=250 * self.ratio_ventana,
                            relief=tk.RIDGE, bd=8)
 
-        # Label iteracion actual
+        # Label iteración actual
         self.iteracion_actual = tk.Label(master=self.frame4, bg='#A9CCE3', font=('math', 18, 'bold italic'),
                                          text="", width=31)
         # Boton first
@@ -148,14 +148,14 @@ class Ventana:
         self.boton_last = tk.Button(master=self.frame4, text='>>', command=self.goLast,
                                     bg='#F4D03F', font=('math', 15, 'bold italic'), width=7)
 
-        # Label modo de grafica
+        # Label modo de gráfica
         self.modo_grafica = tk.Label(master=self.frame4, bg='#A9CCE3', font=('math', 18, 'bold italic'),
-                                     text="Modo de grafica", width=31)
+                                     text="Modo de gráfica", width=31)
         # Boton first
-        self.con_interpolacion = tk.Button(master=self.frame4, text='Con interpolacion', command=self.conInterpolacion,
+        self.con_interpolacion = tk.Button(master=self.frame4, text='Con interpolación', command=self.conInterpolacion,
                                            bg='#A9CCE3', font=('math', 15, 'bold italic'), width=15)
         # Boton back
-        self.sin_interpolacion = tk.Button(master=self.frame4, text='Sin interpolacion', command=self.sinInterpolacion,
+        self.sin_interpolacion = tk.Button(master=self.frame4, text='Sin interpolación', command=self.sinInterpolacion,
                                            bg='#A9CCE3', font=('math', 15, 'bold italic'), width=15)
 
         # ---------- Frame inferior derecho ----------
@@ -168,11 +168,11 @@ class Ventana:
         defaultParametros = [0.33, 0.16, 0.08, 20]
         self.parametros = []
         for i in range(4):
-            # Label parametro
+            # Label parámetro
             lbl = tk.Label(master=self.frame5, bg='#A9CCE3', font=('math', 18, 'bold italic'), text=nombreParametros[i])
             lbl.grid(pady=5, row=i, column=1, padx=(20, 0))
 
-            # Display e input del valor del parametro
+            # Display e input del valor del parámetro
             vldt_ifnum_cmd = (self.window.register(self.validate), '%S')
             par = tk.Entry(master=self.frame5, validate='all', validatecommand=vldt_ifnum_cmd)
             par.insert(0, defaultParametros[i])
@@ -180,12 +180,12 @@ class Ventana:
             par.grid(pady=5, row=i, column=2, padx=(0, 20))
             self.parametros.append(par)
 
-        self.editar_parametros_button = tk.Button(master=self.frame5, text='Editar parametros',
+        self.editar_parametros_button = tk.Button(master=self.frame5, text='Editar parámetros',
                                                   command=self.habilitarParametros,
                                                   bg='#A9CCE3', font=('math', 15, 'bold italic'), width=20)
         self.editar_parametros_button.grid(pady=8, row=8, column=1, columnspan=2, padx=(17, 17))
 
-        self.actualizar_parametros_button = tk.Button(master=self.frame5, text='Actualizar parametros',
+        self.actualizar_parametros_button = tk.Button(master=self.frame5, text='Actualizar parámetros',
                                                       command=self.actualizarParametros,
                                                       bg='#A9CCE3', font=('math', 15, 'bold italic'), width=20)
 
@@ -204,7 +204,7 @@ class Ventana:
     def sinInterpolacion(self):
         self.graficaEvolucion(False)
 
-    # Funcion que grafica la evolcion de la infeccion en el tiempo
+    # Función que grafica la evolución de la infección en el tiempo
     def graficaEvolucion(self, interpolacion):
         plt.clf()
 
@@ -234,7 +234,7 @@ class Ventana:
 
         plt.legend(loc='upper right')
         plt.grid(1)
-        plt.xlabel('Iteracion')
+        plt.xlabel('Iteración')
         plt.ylabel('Estado de los nodos')
         plt.xticks(np.arange(min(T), max(T) + 1, (len(T) - 1) / 10))
 
@@ -297,7 +297,7 @@ class Ventana:
         self.Graph = None
         self.Model = None
 
-    # Funcion que crea un nuevo grafo
+    # Función que crea un nuevo grafo
     def crearNuevoGrafo(self):
         inputDialog = DialogoCrearGrafo(self.window)
         self.window.wait_window(inputDialog.top)
@@ -311,7 +311,7 @@ class Ventana:
 
             self.grafica()
 
-    # Funcion que carga un grafo existente
+    # Función que carga un grafo existente
     def cargarGrafo(self):
         filename = askopenfilename(initialdir='./Grafos Guardados', filetypes=(('Archivos JSON', '*.json'),))
         if filename:
@@ -326,7 +326,7 @@ class Ventana:
             else:
                 self.Graph = None
 
-    # Funcion que guarda/exporta en un archivo el grafo cargado actualmente
+    # Función que guarda/exporta en un archivo el grafo cargado actualmente
     def guardarGrafo(self):
         if self.Graph:
             file = asksaveasfile(initialdir='./Grafos Guardados', mode='w', defaultextension=".json",
@@ -337,7 +337,7 @@ class Ventana:
         else:
             messagebox.showerror('Error', "No se ha creado ningun grafo")
 
-    # Funcion que ejecuta el modelo
+    # Función que ejecuta el modelo
     def ejecutarModelo(self):
         if self.Graph is None:
             self.crearNuevoGrafo()
@@ -408,7 +408,7 @@ class Ventana:
                 name='value')
             self.grafica()
 
-    # Funcion que grafica las funciones seleccionadas utilizando la funcion plot de matplotlib.pyplot
+    # Función que grafica las funciones seleccionadas utilizando la función plot de matplotlib.pyplot
     def grafica(self):
         plt.clf()
 
@@ -425,21 +425,21 @@ class Ventana:
 
         if self.Model:
             if self.Model.t > 0:
-                self.iteracion_actual['text'] = "Iteracion # {}".format(self.Model.t)
+                self.iteracion_actual['text'] = "Iteración # {}".format(self.Model.t)
             else:
                 self.iteracion_actual['text'] = "Estado inicial"
 
         self.canvas.draw()
         self.window.update()
 
-    # Funcion que valida si los caracteres ingresados en el campo de los parametros son validos
+    # Función que valida si los caracteres ingresados en el campo de los parámetros son válidos
     def validate(self, S):
         valid = S == '' or S == ',' or S == '.' or S.isdigit() or self.is_float(S)
         if not valid:
             self.window.bell()
         return valid
 
-    # Funcion que evalua si una cadena de texto es un numero real
+    # Función que evalua si una cadena de texto es un numero real
     def is_float(self, element) -> bool:
         try:
             float(element)
@@ -447,7 +447,7 @@ class Ventana:
         except ValueError:
             return False
 
-    # Funcion que habilita los parametros para ser actualizados
+    # Función que habilita los parámetros para ser actualizados
     def habilitarParametros(self):
         for i in self.parametros:
             i.configure(state='normal')
@@ -455,18 +455,18 @@ class Ventana:
         self.editar_parametros_button.grid_forget()
         self.actualizar_parametros_button.grid(pady=8, row=8, column=1, columnspan=2, padx=(17, 17))
 
-    # Funcion que actualiza los parametros con los valores ingresados por el usuario si estos son validos
+    # Función que actualiza los parametros con los valores ingresados por el usuario si estos son validos
     def actualizarParametros(self) -> bool:
         try:
             for i in range(4):
                 if i < 3:
                     act = float(self.parametros[i].get())
                     if not 0 <= act <= 1:
-                        raise ValueError('Parametros: al menos un valor ingresado esta fuera de rango')
+                        raise ValueError('Parámetros: al menos un valor ingresado está fuera de rango')
                 if i == 3:
                     act = int(self.parametros[i].get())
                     if not 1 <= act <= 100:
-                        raise ValueError('Parametros: al menos un valor ingresado esta fuera de rango')
+                        raise ValueError('Parámetros: al menos un valor ingresado está fuera de rango')
 
             for i in self.parametros:
                 i.configure(state='readonly')
@@ -477,7 +477,7 @@ class Ventana:
 
         except ValueError as e:
             if str(e).startswith('invalid') or str(e).startswith('could'):
-                messagebox.showerror('Error', "Parametros: al menos un valor ingresado no es valido")
+                messagebox.showerror('Error', "Parámetros: al menos un valor ingresado no es válido")
             else:
                 messagebox.showerror('Error', str(e))
             return False

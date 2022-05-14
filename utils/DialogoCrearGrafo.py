@@ -1,9 +1,14 @@
+# ----------------------------------------------------
+# Diálogo mostrado para generar un nuevo grafo
+# Realizado por: Juan Diego González Gómez
+# ----------------------------------------------------
+
+# -------------------- Imports -----------------------
 import tkinter as tk
 
 from tkinter import messagebox
 
 class DialogoCrearGrafo:
-
     def __init__(self, parent):
         self.val = None
 
@@ -34,6 +39,6 @@ class DialogoCrearGrafo:
                 self.val = self.entry.get()
                 self.top.destroy()
             else:
-                messagebox.showerror('Error', "El valor ingresado esta fuera de rango (entre 2 y 100)")
+                messagebox.showerror('Error', "El valor ingresado está fuera de rango (entre 2 y 100)")
         else:
             self.top.bell()

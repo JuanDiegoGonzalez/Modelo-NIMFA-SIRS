@@ -1,12 +1,10 @@
 # ----------------------------------------------------
 # Generador de grafos
-# Realizado por: Juan Diego Gonzalez Gomez
+# Realizado por: Juan Diego González Gómez
 # Adaptado y modificado de: https://github.com/MartinGalvanCastro/NimdaModel
 # ----------------------------------------------------
 
 # -------------------- Imports -----------------------
-
-
 import numpy as np
 import networkx as nx
 import os, json, random
@@ -17,23 +15,21 @@ from tkinter import messagebox
 from random import uniform, seed
 
 # -------------------- Variables globales -----------------------
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-
 rngSeed = 32
 np.random.seed(rngSeed)
 seed(rngSeed)
 
 # -------------------- Clase que representa un grafo --------------------
 class Grafo:
-    # Funcion que crea un grafo y lo grafica
+    # Función que crea un grafo y lo grafica
     # mode : int
-    #     Modo de creacion:
-    #         1 -> Grafo cargado desde un archivo json
+    #     Modo de creación:
+    #         1 -> Grafo cargado desde un archivo JSON
     #         2 -> Grafo nuevo (aleatorio)
     # init : String
-    #     Puede ser la ruta al json (modo 1) o la canitdad de nodos que tiene el grafo (modo 2)
+    #     Puede ser la ruta al json (modo 1) o la cantidad de nodos que tiene el grafo (modo 2)
     def __init__(self, mode: int, init: str, ventana) -> None:
-        # ---------- Declaracion de atributos ----------
+        # ---------- Declaración de atributos ----------
         self.ventana = ventana
         self.G = nx.Graph()
         self.graph_data = None
@@ -42,7 +38,7 @@ class Grafo:
         self.colors = mpl.colors.Normalize(vmin=0, vmax=1, clip=True)
         self.n = 0
 
-        # ---------- Creacion del grafo ----------
+        # ---------- Creación del grafo ----------
         # Si se carga el grafo desde un archivo JSON
         if mode == 1:
             self.pos = {}
@@ -64,7 +60,7 @@ class Grafo:
 
         # O si se genera un grafo nuevo (aleatorio)
         else:
-            # Inicializacion de atributos
+            # Inicialización de atributos
             self.n = int(init)
             RC = 45
             self.pos = {i: (inf, inf) for i in range(self.n)}
@@ -72,11 +68,12 @@ class Grafo:
             self.adjM = np.zeros((self.n, self.n), int)
             self.nodes = [{"value": 0.5, "adjList": [0 for _ in range(self.n)]}
                           for _ in range(self.n)]
+
             # Se asigna al azar el nodo donde inicia la infeccion
             self.initialInfected = random.randint(0, self.n-1)
             self.nodes[self.initialInfected]["value"] = 1
 
-            # Ubicacion de nodos
+            # Ubicación de nodos
             for i in range(1, self.n):
                 flag = True
                 while flag:
@@ -90,7 +87,7 @@ class Grafo:
                                 flag = False
                                 break
 
-            # Creacion de la lista de adjacencia
+            # Creación de la lista de adjacencia
             for i in range(self.n):
                 self.nodes[i]["pos"] = self.pos[i]
                 for j in range(self.n):
@@ -106,7 +103,7 @@ class Grafo:
                 if self.adjM[i, j] == 1:
                     self.G.add_edge(i, j)
 
-        # Se asignan los valores de infeccion de cada nodo
+        # Se asignan los valores de infección de cada nodo
         nx.set_node_attributes(
             self.G, {i: self.nodes[i]['value'] for i in range(self.n)}, name='value')
 
@@ -121,11 +118,11 @@ class Grafo:
 
 
 
-    # Funcion que guarda el grafo en un archivo JSON
+    # Función que guarda el grafo en un archivo JSON
     def save_graph(self, file) -> None:
         json.dump(self.graph_data, file)
 
-    # Funcion que actualiza el valor de infección de cada nodo
+    # Función que actualiza el valor de infección de cada nodo
     # v : np.array
     #     Valores para la iteración i
     def updateValue(self, v: np.array) -> None:
@@ -133,11 +130,11 @@ class Grafo:
             self.G, {i: v[i] for i in range(len(v))}, name='value')
         self.ventana.grafica()
 
-    # Funcion que devuelve el grado de todos los nodos
+    # Función que devuelve el grado de todos los nodos
     def get_degree_of_nodes(self) -> list:
         return sorted(list(self.G.degree()), key=lambda x: x[0])
 
-    # Funcion que devuelve, para el nodo que recibe por parametro, sus nodos vecinos infectados
+    # Función que devuelve, para el nodo que recibe por parámetro, sus nodos vecinos infectados
     def get_infected_neigboors(self, root) -> list:
         neighboors = []
         for i in range(self.n):
@@ -151,10 +148,10 @@ class Grafo:
 
         return resp
 
-# Funcion que genera un grafo de prueba en caso de que este archivo sea ejecutado
+# Función que genera un grafo de prueba en caso de que este archivo sea ejecutado
 if __name__=='__main__':
-    print("\nEsta es una ejecucion de prueba para el grafo.\n")
-    print("Para ejecutar la aplicacion completa debe ejecutar el archivo \"main.py\".")
+    print("\nEsta es una ejecución de prueba para el grafo.\n")
+    print("Para ejecutar la aplicación completa debe ejecutar el archivo \"main.py\".")
 
     path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../Grafos Guardados')
     g = Grafo(2, str(10))
