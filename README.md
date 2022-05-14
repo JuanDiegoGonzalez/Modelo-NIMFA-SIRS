@@ -1,7 +1,7 @@
 # Modelo NIMFA SIRS
 
 ## Realizado por:
-* Juan Diego González Gómez (201911031) 
+Juan Diego González Gómez 
 
 ## Instrucciones de instalación y ejecución:
 
