@@ -11,7 +11,7 @@ import numpy as np
 
 from random import seed
 
-from Modelo.utils.Grafo import Grafo
+from utils.Grafo import Grafo
 
 # -------------------- Variables globales -----------------------
 rngSeed = 32

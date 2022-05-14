@@ -16,9 +16,10 @@ from scipy.interpolate import make_interp_spline
 from tkinter.filedialog import askopenfilename, asksaveasfile
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg)
 
-from Modelo.utils.Grafo import Grafo
-from Modelo.utils.ModeloNimfaSirs import Modelo
-from Modelo.utils.DialogoCrearGrafo import DialogoCrearGrafo
+from utils.Grafo import Grafo
+from utils.Grafo import Grafo
+from utils.ModeloNimfaSirs import Modelo
+from utils.DialogoCrearGrafo import DialogoCrearGrafo
 
 
 # -------------------- Clase ventana principal --------------------
