@@ -4,6 +4,7 @@
 # ----------------------------------------------------
 
 # -------------------- Imports -----------------------
+import time
 import numpy as np
 import tkinter as tk
 import networkx as nx
@@ -16,7 +17,6 @@ from scipy.interpolate import make_interp_spline
 from tkinter.filedialog import askopenfilename, asksaveasfile
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg)
 
-from utils.Grafo import Grafo
 from utils.Grafo import Grafo
 from utils.ModeloNimfaSirs import Modelo
 from utils.DialogoCrearGrafo import DialogoCrearGrafo
@@ -88,7 +88,7 @@ class Ventana:
 
         # Boton cargar datos de prueba
         self.cargar_datos_prueba = tk.Button(master=self.frame1, text='Cargar datos de prueba',
-                                             command=self.cargarDatosPrueba,
+                                             command=self.ejecutarConjuntoDatosPrueba,
                                              bg='#A9CCE3', font=('math', 15, 'bold italic'), width=20)
         self.cargar_datos_prueba.grid(pady=(9, 11), row=3, column=1, padx=(17, 17))
 
@@ -207,8 +207,39 @@ class Ventana:
     def guardarModelo(self):
         ...
 
-    def cargarDatosPrueba(self):
-        ...
+    def ejecutarConjuntoDatosPrueba(self):
+        if self.Graph is None:
+            self.crearNuevoGrafo()
+
+        if self.Graph is not None:
+            self.quitarBotonesPre()
+            # Poner mensaje ejecutando
+            # Barra de progreso/porcentaje
+
+            with open("Datos de Prueba/Caso{}Nodos.txt".format(self.Graph.n), 'w+', encoding='utf-8') as f:
+                ...
+
+            alfa = np.arange(0.0, 0.6, 0.1)
+            beta = np.arange(0.0, 0.6, 0.1)
+            gamma = np.arange(0.0, 0.6, 0.1)
+
+            global_start_time = time.time()
+            for i in alfa:
+                for j in beta:
+                    for k in gamma:
+                        start_time = time.time()
+                        params = [i, j, k, 100]
+                        print(params)
+                        self.Model = Modelo(self.Graph.adjM, self.Graph, params)
+                        self.Model.run(True)
+                        print("--- %s seconds ---" % (time.time() - start_time))
+                        with open("Datos de Prueba/Caso{}Nodos.txt".format(self.Graph.n), 'a', encoding='utf-8') as f:
+                            f.write("--- %s seconds ---\n" % (time.time() - start_time))
+            print("--- %s seconds ---" % (time.time() - global_start_time))
+            with open("Datos de Prueba/Caso{}Nodos.txt".format(self.Graph.n), 'a', encoding='utf-8') as f:
+                f.write("--- %s seconds ---\n" % (time.time() - global_start_time))
+
+            self.cargarBotonesPost()
 
     def conInterpolacion(self):
         self.graficaEvolucion(True)
@@ -359,7 +390,7 @@ class Ventana:
             self.Model = Modelo(self.Graph.adjM, self.Graph, [float(i.get()) for i in self.parametros])
 
             self.quitarBotonesPre()
-            self.Model.run()
+            self.Model.run(False)
             self.cargarBotonesPost()
 
     def quitarBotonesPre(self):

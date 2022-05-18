@@ -106,17 +106,7 @@ class Grafo:
         nx.set_node_attributes(
             self.G, {i: self.nodes[i]['value'] for i in range(self.n)}, name='value')
 
-
-
-
-
-
     # -------------------- Otras funciones de la clase --------------------
-
-
-
-
-
     # Función que guarda el grafo en un archivo JSON
     def save_graph(self, file) -> None:
         json.dump(self.graph_data, file)
@@ -128,10 +118,6 @@ class Grafo:
         nx.set_node_attributes(
             self.G, {i: v[i] for i in range(len(v))}, name='value')
         self.ventana.grafica()
-
-    # Función que devuelve el grado de todos los nodos
-    def get_degree_of_nodes(self) -> list:
-        return sorted(list(self.G.degree()), key=lambda x: x[0])
 
     # Función que devuelve, para el nodo que recibe por parámetro, sus nodos vecinos infectados
     def get_infected_neigboors(self, root) -> list:

@@ -38,55 +38,65 @@ class Modelo:
         self.history = [[i for i in self.v]]
         self.actualIteration = self.iterations
 
-        # self.m = 10
-        # self.v = np.zeros(self.n)
-        # self.colors = mpl.colors.Normalize(vmin=0, vmax=1, clip=True)
-        # self.v[:] = [uniform(0, 0.05) for _ in range(self.n)]
-
-        # self.degrees = self.graph.get_degree_of_nodes()
-
-        # self.alfa = np.zeros(shape=(self.n, self.n))
-        # self.beta = np.ones(shape=(self.n)) * betaI
-
-        # -- Control --
-        self.control = 0
-
-    def back(self):
-        self.control = 1
+        self.u = np.ones(self.n)
 
     # Función que ejecuta la simulación del modelo
-    def run(self):
+    def run(self, test):
         self.t = 0
+        temporal_nodes = [a.copy() for a in self.graph.nodes]
         while self.t < self.iterations:
-
             for i in range(self.n):
                 # Nodos susceptibles
                 if self.graph.nodes[i]["value"] == 0.5:
-                    for j in self.graph.get_infected_neigboors(i):
+                    #A = np.diag(self.u - self.delta)
+                    #B = np.diag(self.u - vinit)
+
+                    #C = self.matrixMul([A, vinit])
+                    #D = self.matrixMul([B, self.beta, vinit])
+
+                    for _ in self.graph.get_infected_neigboors(i):
                         if random.randint(1, 100) <= self.parametros[0] * 100:
-                            self.graph.nodes[i]["value"] = 1
+                            temporal_nodes[i]["value"] = 1
                             self.v[i] = 1
 
+
+
+                # Nodos infectados
                 elif self.graph.nodes[i]["value"] == 1:
                     if random.randint(1, 100) <= self.parametros[1] * 100:
-                        self.graph.nodes[i]["value"] = 0
+                        temporal_nodes[i]["value"] = 0
                         self.v[i] = 0
 
+                # Nodos recuperados
                 else:
                     if random.randint(1, 100) <= self.parametros[2] * 100:
-                        self.graph.nodes[i]["value"] = 0.5
+                        temporal_nodes[i]["value"] = 0.5
                         self.v[i] = 0.5
 
+            self.graph.nodes = [a.copy() for a in temporal_nodes]
             self.t += 1
-            self.graph.updateValue(self.v)
+            if not test:
+                self.graph.updateValue(self.v)
             self.history.append([i for i in self.v])
-            time.sleep(0.25)
+            if not test:
+                time.sleep(0.25)
 
-        self.exportarDatos()
+        if not test:
+            self.exportarDatos()
+        else:
+            self.exportarDatosTest()
 
     # Función que exporta los resultados del modelo (la variable self.history)
     def exportarDatos(self):
         with open("Modelos Guardados/{}nodos.txt".format(self.n), 'w', encoding='utf-8') as f:
+            for i in self.history:
+                f.write(str(i) + "\n")
+
+    # Función que exporta los parametros y resultados del test (la variable self.history)
+    def exportarDatosTest(self):
+        with open("Datos de Prueba/Caso{}Nodos.txt".format(self.n), 'a', encoding='utf-8') as f:
+            for i in self.parametros:
+                f.write(str(i) + "\n")
             for i in self.history:
                 f.write(str(i) + "\n")
 
