@@ -8,8 +8,9 @@ import tkinter as tk
 
 from tkinter import messagebox
 
-
+# -------------------- Clase que representa el diálogo para crear un grafo --------------------
 class DialogoCrearGrafo:
+    # Función que declara y configura los elementos del diálogo
     def __init__(self, parent):
         self.val = None
         self.val2 = None
@@ -36,12 +37,14 @@ class DialogoCrearGrafo:
         self.cancelButton = tk.Button(top, text='Cancel', command=self.top.destroy)
         self.cancelButton.pack()
 
+    # Fución que valida los inputs del ususario
     def validate(self, S):
         valid = S == '' or S.isdigit()
         if not valid:
             self.top.bell()
         return valid
 
+    # Función que envía los valores ingresados a la ventana principal
     def send(self):
         if self.entry.get() != "":
             if (2 <= int(self.entry.get()) <= 100) and (0 <= int(self.entry2.get()) <= 40):

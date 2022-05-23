@@ -5,9 +5,10 @@
 # ----------------------------------------------------
 
 # -------------------- Imports -----------------------
+import json
+import random
 import numpy as np
 import networkx as nx
-import os, json, random
 
 from math import dist, inf
 from tkinter import messagebox

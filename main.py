@@ -207,6 +207,7 @@ class Ventana:
                                                       command=self.actualizarParametros, bg='#A9CCE3',
                                                       font=('math', 15, 'bold italic'), width=20)
 
+    # Función que carga un modelo de un archivo .txt generado previamente
     def cargarModelo(self):
         filename = askopenfilename(initialdir='.', filetypes=(('Archivos de texto', '*.txt'),))
         if filename:
@@ -247,6 +248,7 @@ class Ventana:
             self.quitarBotonesPre()
             self.cargarBotonesPost()
 
+    # Función que guarda el modelo actual en un archivo .txt
     def guardarModelo(self):
         if self.Model:
             self.Model.exportarDatos()
@@ -254,6 +256,7 @@ class Ventana:
         else:
             messagebox.showerror('Error', "No se ha ejecutado ningún modelo.")
 
+    # Función que ejecuta un conjunto de datos de prueba
     def ejecutarConjuntoDatosPrueba(self):
         if self.Graph is None:
             self.crearNuevoGrafo()
@@ -317,6 +320,7 @@ class Ventana:
             self.Graph = None
             self.Model = None
 
+    # Función que muestra la imagen del modelo SIRS
     def mostrarModelo(self):
         root = tk.Toplevel()
         img = ImageTk.PhotoImage(Image.open("./assets/Modelo.png"))
@@ -324,6 +328,7 @@ class Ventana:
         panel.pack(side="bottom", fill="both", expand="yes")
         root.mainloop()
 
+    # Función que muestra la imagen de las ecuaciones del modelo SIRS
     def mostrarEcuacionesModelo(self):
         root = tk.Toplevel()
         img = ImageTk.PhotoImage(Image.open("./assets/Ecuaciones Modelo.png"))
@@ -331,9 +336,11 @@ class Ventana:
         panel.pack(side="bottom", fill="both", expand="yes")
         root.mainloop()
 
+    # Función que crea la gráfica con interpolación
     def conInterpolacion(self):
         self.graficaEvolucion(True)
 
+    # Función que crea la gráfica sin interpolación
     def sinInterpolacion(self):
         self.graficaEvolucion(False)
 
@@ -390,6 +397,7 @@ class Ventana:
         self.boton_forward.grid_forget()
         self.boton_last.grid_forget()
 
+    # Función que vuelve a mostrar el modelo cuando se está en la gráfica de evolución
     def volverModelo(self):
         self.grafica()
         self.cargar_modelo["state"] = "normal"
@@ -408,6 +416,7 @@ class Ventana:
         self.con_interpolacion.grid_forget()
         self.sin_interpolacion.grid_forget()
 
+    # Función que reinicia el grafo y el modelo, volviendo al estado inicial de la aplicación
     def nuevaEjecucion(self):
         self.cargar_modelo["state"] = "normal"
         self.guardar_modelo["state"] = "normal"
@@ -494,6 +503,7 @@ class Ventana:
             self.Model.run(False)
             self.cargarBotonesPost()
 
+    # Función que deshabilita los botones antes de ejecutar un modelo
     def quitarBotonesPre(self):
         self.cargar_modelo["state"] = "disabled"
         self.guardar_modelo["state"] = "disabled"
@@ -507,6 +517,7 @@ class Ventana:
         self.mostrar_ecuaciones_modelo["state"] = "disabled"
         self.iteracion_actual.grid(pady=100, row=1, column=1, columnspan=4, padx=(7, 6))
 
+    # Función que habilita los botones después de ejecutar un modelo
     def cargarBotonesPost(self):
         self.cargar_modelo["state"] = "normal"
         self.guardar_modelo["state"] = "normal"
@@ -524,6 +535,7 @@ class Ventana:
         self.mostrar_grafica_evolucion.grid(pady=9, row=1, column=1, padx=(17, 17))
         self.nueva_ejecucion.grid(pady=(9, 172-self.ajuste_ventana), row=2, column=1, padx=(17, 17))
 
+    # Función que muestra la primera iteración del modelo actual
     def goFirst(self):
         if self.Model.t > 0:
             self.Model.t = 0
@@ -532,6 +544,7 @@ class Ventana:
                                    name='value')
             self.grafica()
 
+    # Función que muestra la anterior iteración del modelo actual
     def goBack(self) -> None:
         if self.Model.t > 0:
             self.Model.t -= 1
@@ -540,6 +553,7 @@ class Ventana:
                                    name='value')
             self.grafica()
 
+    # Función que muestra la siguiente iteración del modelo actual
     def goForward(self) -> None:
         if self.Model.t < self.Model.iterations:
             self.Model.t += 1
@@ -548,6 +562,7 @@ class Ventana:
                                    name='value')
             self.grafica()
 
+    # Función que muestra la última iteración del modelo actual
     def goLast(self) -> None:
         if self.Model.t < self.Model.iterations:
             self.Model.t = int(self.Model.iterations)
@@ -642,5 +657,6 @@ class Ventana:
             return False
 
 
+# Función principal de la aplicación. Crea la interfaz gráfica
 if __name__ == '__main__':
     ventana = Ventana()
