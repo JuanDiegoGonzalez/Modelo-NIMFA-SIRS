@@ -203,68 +203,111 @@ class Ventana:
                                                       bg='#A9CCE3', font=('math', 15, 'bold italic'), width=20)
 
     def cargarModelo(self):
-        ...
+        filename = askopenfilename(initialdir='.', filetypes=(('Archivos de texto', '*.txt'),))
+        if filename:
+            file = open(filename)
+
+            n = file.readline()
+            path = filename.split("/")
+            path_grafo = ""
+            for i in range(len(path) - 1):
+                path_grafo += "{}/".format(path[i])
+            print("{}{}nodos.json".format(path_grafo, n[:-1]))
+            self.Graph = Grafo(1, ["{}{}nodos.json".format(path_grafo, n[:-1])], self)
+
+            params = [float(file.readline()[:-1]), float(file.readline()[:-1]), float(file.readline()[:-1]),
+                      int(file.readline()[:-1].split(".")[0])]
+            for i in range(len(self.parametros)):
+                self.parametros[i].configure(state='normal')
+                self.parametros[i].delete(0, tk.END)
+                self.parametros[i].insert(0, params[i])
+                self.parametros[i].configure(state='readonly')
+
+            self.Model = Modelo(self.Graph.adjM, self.Graph, params)
+            self.Model.t = params[3]
+            file.readline()
+            for i in range(params[3]):
+                self.Model.history.append([float(i) for i in file.readline()[:-1].replace("[", "").replace("]", "")
+                                          .replace(" ", "").split(",")])
+
+            self.fig = plt.figure(figsize=(8, 5), dpi=100)
+            self.canvas = FigureCanvasTkAgg(self.fig, self.window)
+            self.canvas.get_tk_widget().place(x=300 * self.ratio_ventana, y=0 * self.ratio_ventana)
+            nx.set_node_attributes(
+                self.Graph.G,
+                {i: self.Model.history[self.Model.t][i] for i in range(len(self.Model.history[self.Model.t]))},
+                name='value')
+            self.grafica()
+
+            self.quitarBotonesPre()
+            self.cargarBotonesPost()
 
     def guardarModelo(self):
         if self.Model:
             self.Model.exportarDatos()
             messagebox.showinfo('Guardar Modelo', "¡El modelo se ha exportado exitosamente!")
         else:
-            messagebox.showerror('Error', "No se ha ejecutado ningún modelo")
+            messagebox.showerror('Error', "No se ha ejecutado ningún modelo.")
 
     def ejecutarConjuntoDatosPrueba(self):
         if self.Graph is None:
             self.crearNuevoGrafo()
 
         if self.Graph is not None:
-            self.quitarBotonesPre()
-            # Poner mensaje ejecutando
-            # Barra de progreso/porcentaje
-
             if not os.path.exists("./Datos de Prueba/{}nodos".format(self.Graph.n)):
                 os.makedirs("./Datos de Prueba/{}nodos".format(self.Graph.n))
 
-            file = open("./Datos de Prueba/{}nodos/Grafo.json".format(self.Graph.n), "w")
+            file = open("./Datos de Prueba/{}nodos/{}nodos.json".format(self.Graph.n, self.Graph.n), "w")
             self.Graph.save_graph(file)
             file.close()
 
-            alfa = np.arange(0.0, 0.6, 0.1)
-            beta = np.arange(0.0, 0.6, 0.1)
-            gamma = np.arange(0.0, 0.6, 0.1)
+            # alfa = np.arange(0.0, 0.6, 0.1)
+            # beta = np.arange(0.0, 0.6, 0.1)
+            # gamma = np.arange(0.0, 0.6, 0.1)
 
-            # Se elimina el virus (ver nodo #3)
-            #g = Grafo(1, path)
-            #model = Modelo(g.adjM, g, 0.33, 0.16, 0.08)
+            casos_de_prueba = []
+
+            # Se elimina el virus
+            casos_de_prueba.append((0.10, 0.50, 0.05))
 
             # El virus infecta la red completa
-            # g = Grafo(2, str(30))
-            # model = Modelo(g.adjM, g, 0.5, 0.05, 0.06)
+            casos_de_prueba.append((0.50, 0.10, 0.18))
 
             # SIR model
-            # g = Grafo(2, str(30))
-            # model = Modelo(g.adjM, g, 0.5, 0.25, 0.00)
+            casos_de_prueba.append((0.50, 0.25, 0.00))
 
             global_start_time = time.time()
-            for i in alfa:
-                for j in beta:
-                    for k in gamma:
-                        with open("Datos de Prueba/{}nodos/{:.1f}-{:.1f}-{:.1f}.txt".format(self.Graph.n, i, j, k), 'w+', encoding='utf-8') as f:
-                            f.write(str(self.Graph.n) + "\n")
+            # for i in alfa:
+            #    for j in beta:
+            #        for k in gamma:
+            for caso in casos_de_prueba:
+                i, j, k = caso
+                with open("Datos de Prueba/{}nodos/{:.2f}-{:.2f}-{:.2f}.txt".format(self.Graph.n, i, j, k), 'w+',
+                          encoding='utf-8') as f:
+                    f.write(str(self.Graph.n) + "\n")
 
-                        start_time = time.time()
-                        params = [i, j, k, 100]
-                        print(params)
-                        self.Model = Modelo(self.Graph.adjM, self.Graph, params)
-                        self.Model.run(True)
-                        print("--- %s seconds ---" % (time.time() - start_time))
+                start_time = time.time()
+                params = [i, j, k, 100]
+                print(params)
+                self.Model = Modelo(self.Graph.adjM, self.Graph, params)
+                self.Model.run(True)
+                print("--- %s seconds ---" % (time.time() - start_time))
 
-                        with open("Datos de Prueba/{}nodos/{:.1f}-{:.1f}-{:.1f}.txt".format(self.Graph.n, i, j, k), 'a', encoding='utf-8') as f:
-                            f.write("--- %s segundos ---\n" % (time.time() - start_time))
+                with open("Datos de Prueba/{}nodos/{:.2f}-{:.2f}-{:.2f}.txt".format(self.Graph.n, i, j, k), 'a',
+                          encoding='utf-8') as f:
+                    f.write("--- %s segundos ---\n" % (time.time() - start_time))
             print("--- %s seconds ---" % (time.time() - global_start_time))
             with open("Datos de Prueba/{}nodos/TiempoTotal.txt".format(self.Graph.n), 'w+', encoding='utf-8') as f:
                 f.write("--- %s segundos ---\n" % (time.time() - global_start_time))
 
-            self.cargarBotonesPost()
+            messagebox.showinfo('Ejecutar datos de prueba', "¡Los datos de prueba se han ejecutado satisfactoriamente!")
+
+            plt.clf()
+            self.canvas.draw()
+            self.window.update()
+
+            self.Graph = None
+            self.Model = None
 
     def conInterpolacion(self):
         self.graficaEvolucion(True)
@@ -371,7 +414,7 @@ class Ventana:
         self.window.wait_window(inputDialog.top)
 
         if inputDialog.val is not None:
-            self.Graph = Grafo(2, str(inputDialog.val), self)
+            self.Graph = Grafo(2, [str(inputDialog.val), str(inputDialog.val2)], self)
 
             self.fig = plt.figure(figsize=(8, 5), dpi=100)
             self.canvas = FigureCanvasTkAgg(self.fig, self.window)
@@ -383,7 +426,7 @@ class Ventana:
     def cargarGrafo(self):
         filename = askopenfilename(initialdir='./Grafos Guardados', filetypes=(('Archivos JSON', '*.json'),))
         if filename:
-            self.Graph = Grafo(1, filename, self)
+            self.Graph = Grafo(1, [filename], self)
 
             if len(self.Graph.nodes) > 0:
                 self.fig = plt.figure(figsize=(8, 5), dpi=100)
@@ -403,7 +446,7 @@ class Ventana:
                 self.Graph.save_graph(file)
                 file.close()
         else:
-            messagebox.showerror('Error', "No se ha creado ningun grafo")
+            messagebox.showerror('Error', "No se ha creado ningun grafo.")
 
     # Función que ejecuta el modelo
     def ejecutarModelo(self):
@@ -411,7 +454,6 @@ class Ventana:
             self.crearNuevoGrafo()
 
         if self.Graph is not None and self.actualizarParametros():
-            self.actualizarParametros()
             self.Model = Modelo(self.Graph.adjM, self.Graph, [float(i.get()) for i in self.parametros])
 
             self.quitarBotonesPre()
@@ -522,6 +564,14 @@ class Ventana:
 
     # Función que habilita los parámetros para ser actualizados
     def habilitarParametros(self):
+        self.cargar_modelo["state"] = "disabled"
+        self.guardar_modelo["state"] = "disabled"
+        self.cargar_datos_prueba["state"] = "disabled"
+        self.crear_nuevo_grafo["state"] = "disabled"
+        self.cargar_grafo["state"] = "disabled"
+        self.guardar_grafo["state"] = "disabled"
+        self.ejecutar_grafo["state"] = "disabled"
+
         for i in self.parametros:
             i.configure(state='normal')
 
@@ -544,15 +594,22 @@ class Ventana:
             for i in self.parametros:
                 i.configure(state='readonly')
 
+            self.cargar_modelo["state"] = "normal"
+            self.guardar_modelo["state"] = "normal"
+            self.cargar_datos_prueba["state"] = "normal"
+            self.crear_nuevo_grafo["state"] = "normal"
+            self.cargar_grafo["state"] = "normal"
+            self.guardar_grafo["state"] = "normal"
+            self.ejecutar_grafo["state"] = "normal"
             self.editar_parametros_button.grid(pady=8, row=8, column=1, columnspan=2, padx=(17, 17))
             self.actualizar_parametros_button.grid_forget()
             return True
 
         except ValueError as e:
             if str(e).startswith('invalid') or str(e).startswith('could'):
-                messagebox.showerror('Error', "Parámetros: al menos un valor ingresado no es válido")
+                messagebox.showerror('Error', "Parámetros: al menos un valor ingresado no es válido.")
             else:
-                messagebox.showerror('Error', str(e))
+                messagebox.showerror('Error', str(e) + ".")
             return False
 
 

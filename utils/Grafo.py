@@ -21,13 +21,7 @@ seed(rngSeed)
 # -------------------- Clase que representa un grafo --------------------
 class Grafo:
     # Función que crea un grafo y lo grafica
-    # mode : int
-    #     Modo de creación:
-    #         1 -> Grafo cargado desde un archivo JSON
-    #         2 -> Grafo nuevo (aleatorio)
-    # init : String
-    #     Puede ser la ruta al json (modo 1) o la cantidad de nodos que tiene el grafo (modo 2)
-    def __init__(self, mode: int, init: str, ventana) -> None:
+    def __init__(self, mode: int, init, ventana) -> None:
         # ---------- Declaración de atributos ----------
         self.ventana = ventana
         self.G = nx.Graph()
@@ -41,7 +35,7 @@ class Grafo:
         if mode == 1:
             self.pos = {}
             try:
-                with open(init) as json_file:
+                with open(init[0]) as json_file:
                     self.graph_data = json.load(json_file)
                     self.n = len(self.graph_data)
                     self.adjM = np.zeros((self.n, self.n), int)
@@ -51,7 +45,7 @@ class Grafo:
                         self.adjM[i, :] = self.graph_data[i]["adjList"]
                         if self.graph_data[i]["value"] == 1:
                             self.initialInfected = i
-                    self.name = init
+                    self.name = init[0]
             except Exception:
                 messagebox.showerror('Error', "El archivo seleccionado no tiene un formato valido")
                 return
@@ -59,8 +53,8 @@ class Grafo:
         # O si se genera un grafo nuevo (aleatorio)
         else:
             # Inicialización de atributos
-            self.n = int(init)
-            RC = 45
+            self.n = int(init[0])
+            RC = int(init[1]) + 5
             self.pos = {i: (inf, inf) for i in range(self.n)}
             self.pos[0] = (uniform(0, 100), uniform(0, 100))
             self.adjM = np.zeros((self.n, self.n), int)

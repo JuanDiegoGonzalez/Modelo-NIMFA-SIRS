@@ -90,7 +90,7 @@ class Modelo:
 
     # Función que exporta los parametros y resultados del test (la variable self.history)
     def exportarDatosTest(self):
-        with open("Datos de Prueba/{}nodos/{:.1f}-{:.1f}-{:.1f}.txt".format(self.Graph.n, self.parametros[0], self.parametros[1], self.parametros[2]), 'a', encoding='utf-8') as f:
+        with open("Datos de Prueba/{}nodos/{:.2f}-{:.2f}-{:.2f}.txt".format(self.Graph.n, self.parametros[0], self.parametros[1], self.parametros[2]), 'a', encoding='utf-8') as f:
             for i in self.parametros:
                 f.write(str(i) + "\n")
             for i in self.history:

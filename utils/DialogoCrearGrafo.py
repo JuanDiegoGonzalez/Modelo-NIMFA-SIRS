@@ -12,6 +12,7 @@ from tkinter import messagebox
 class DialogoCrearGrafo:
     def __init__(self, parent):
         self.val = None
+        self.val2 = None
 
         top = self.top = tk.Toplevel(parent)
 
@@ -21,6 +22,13 @@ class DialogoCrearGrafo:
         vldt_ifnum_cmd = (self.top.register(self.validate), '%S')
         self.entry = tk.Entry(top, validate='all', validatecommand=vldt_ifnum_cmd)
         self.entry.pack()
+
+        self.myLabel2 = tk.Label(top, text='Ingrese el nivel de densidad (entre 0 y 40):')
+        self.myLabel2.pack()
+
+        vldt_ifnum_cmd = (self.top.register(self.validate), '%S')
+        self.entry2 = tk.Entry(top, validate='all', validatecommand=vldt_ifnum_cmd)
+        self.entry2.pack()
 
         self.submitButton = tk.Button(top, text='Submit', command=self.send)
         self.submitButton.pack()
@@ -36,10 +44,11 @@ class DialogoCrearGrafo:
 
     def send(self):
         if self.entry.get() != "":
-            if 2 <= int(self.entry.get()) <= 100:
+            if (2 <= int(self.entry.get()) <= 100) and (0 <= int(self.entry2.get()) <= 40):
                 self.val = self.entry.get()
+                self.val2 = self.entry2.get()
                 self.top.destroy()
             else:
-                messagebox.showerror('Error', "El valor ingresado está fuera de rango (entre 2 y 100)")
+                messagebox.showerror('Error', "Al menos un valor ingresado está fuera de rango.")
         else:
             self.top.bell()
