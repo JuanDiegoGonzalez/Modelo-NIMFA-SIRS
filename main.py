@@ -32,20 +32,18 @@ class Ventana:
         self.window = tk.Tk()
 
         # ---------- Parámetros de la ventana ----------
-        w = 1100
-        h = 750
-
         ws = self.window.winfo_screenwidth()
         hs = self.window.winfo_screenheight()
+        self.ajuste_ventana = 100 if hs < 1000 else 0
 
-        x = ws / 2 - w / 2
-        y = hs / 2 - h / 2
+        w = 1100
+        h = 750 - self.ajuste_ventana
 
-        self.ratio_ventana = 0.85 if hs < 1000 else 1
+        x = (ws / 2 - w / 2)
+        y = (hs / 2 - h / 2) if self.ajuste_ventana == 0 else 0
 
         # ---------- Configuración de la ventana ----------
-        self.window.geometry('%dx%d+%d+%d' % (
-            w * self.ratio_ventana, h * self.ratio_ventana, x * self.ratio_ventana, y * self.ratio_ventana))
+        self.window.geometry('%dx%d+%d+%d' % (w, h, x, y))
         self.window.title('Modelo NIMFA - SIRS')
         self.window.config(bg='white')
         self.window.resizable(False, False)
@@ -74,9 +72,8 @@ class Ventana:
     def configurarVentana(self):
         # ---------- Frame superior izquierdo ----------
         self.frame1 = tk.Frame(master=self.window)
-        self.frame1.place(x=0 * self.ratio_ventana, y=0 * self.ratio_ventana)
-        self.frame1.config(bg="#A9CCE3", width=300 * self.ratio_ventana, height=250 * self.ratio_ventana,
-                           relief=tk.RIDGE, bd=8)
+        self.frame1.place(x=0, y=0)
+        self.frame1.config(bg="#A9CCE3", width=300, height=250, relief=tk.RIDGE, bd=8)
 
         # Boton cargar modelo
         self.cargar_modelo = tk.Button(master=self.frame1, text='Cargar modelo', command=self.cargarModelo,
@@ -90,36 +87,33 @@ class Ventana:
 
         # Boton cargar datos de prueba
         self.ejecutar_datos_prueba = tk.Button(master=self.frame1, text='Ejecutar datos de prueba',
-                                               command=self.ejecutarConjuntoDatosPrueba,
-                                               bg='#A9CCE3', font=('math', 15, 'bold italic'), width=20)
+                                               command=self.ejecutarConjuntoDatosPrueba, bg='#A9CCE3',
+                                               font=('math', 15, 'bold italic'), width=20)
         self.ejecutar_datos_prueba.grid(pady=(9, 11), row=3, column=1, padx=(17, 17))
 
         # ---------- Frame izquierdo centro ----------
         self.frame2 = tk.Frame(master=self.window)
-        self.frame2.place(x=0 * self.ratio_ventana, y=200 * self.ratio_ventana)
-        self.frame2.config(bg="#A9CCE3", width=300 * self.ratio_ventana, height=300 * self.ratio_ventana,
-                           relief=tk.RIDGE, bd=8)
+        self.frame2.place(x=0, y=200)
+        self.frame2.config(bg="#A9CCE3", width=300, height=300-self.ajuste_ventana, relief=tk.RIDGE, bd=8)
 
         # Boton mostrar modelo
-        self.mostrar_modelo = tk.Button(master=self.frame2, text='Mostrar modelo',
-                                        command=self.mostrarModelo,
+        self.mostrar_modelo = tk.Button(master=self.frame2, text='Mostrar modelo', command=self.mostrarModelo,
                                         bg='#A9CCE3', font=('math', 15, 'bold italic'), width=20)
         self.mostrar_modelo.grid(pady=9, row=1, column=1, padx=(17, 17))
 
         # Boton mostrar ecuaciones del modelo
         self.mostrar_ecuaciones_modelo = tk.Button(master=self.frame2, text='Ecuaciones del modelo',
-                                                   command=self.mostrarEcuacionesModelo,
-                                                   bg='#A9CCE3', font=('math', 15, 'bold italic'), width=20)
-        self.mostrar_ecuaciones_modelo.grid(pady=(9, 172), row=2, column=1, padx=(17, 17))
+                                                   command=self.mostrarEcuacionesModelo, bg='#A9CCE3',
+                                                   font=('math', 15, 'bold italic'), width=20)
+        self.mostrar_ecuaciones_modelo.grid(pady=(9, 172-self.ajuste_ventana), row=2, column=1, padx=(17, 17))
 
         # Boton mostrar gráfica de evolución
         self.mostrar_grafica_evolucion = tk.Button(master=self.frame2, text='Gráfica de evolución',
-                                                   command=self.conInterpolacion,
-                                                   bg='#A9CCE3', font=('math', 15, 'bold italic'), width=20)
+                                                   command=self.conInterpolacion, bg='#A9CCE3',
+                                                   font=('math', 15, 'bold italic'), width=20)
 
         # Boton volver al modelo
-        self.volver_modelo = tk.Button(master=self.frame2, text='Volver al modelo',
-                                       command=self.volverModelo,
+        self.volver_modelo = tk.Button(master=self.frame2, text='Volver al modelo', command=self.volverModelo,
                                        bg='#A9CCE3', font=('math', 15, 'bold italic'), width=20)
 
         # Boton nueva ejecución
@@ -128,9 +122,8 @@ class Ventana:
 
         # ---------- Frame inferior izquierdo ----------
         self.frame3 = tk.Frame(master=self.window)
-        self.frame3.place(x=0 * self.ratio_ventana, y=500 * self.ratio_ventana)
-        self.frame3.config(bg="#A9CCE3", width=300 * self.ratio_ventana, height=250 * self.ratio_ventana,
-                           relief=tk.RIDGE, bd=8)
+        self.frame3.place(x=0, y=500-self.ajuste_ventana)
+        self.frame3.config(bg="#A9CCE3", width=300, height=250, relief=tk.RIDGE, bd=8)
 
         # Boton crear nuevo grafo
         self.crear_nuevo_grafo = tk.Button(master=self.frame3, text='Crear nuevo grafo', command=self.crearNuevoGrafo,
@@ -154,25 +147,24 @@ class Ventana:
 
         # ---------- Frame inferior centro ----------
         self.frame4 = tk.Frame(master=self.window)
-        self.frame4.place(x=300, y=500 * self.ratio_ventana)
-        self.frame4.config(bg="#A9CCE3", width=500 * self.ratio_ventana, height=250 * self.ratio_ventana,
-                           relief=tk.RIDGE, bd=8)
+        self.frame4.place(x=300, y=500-self.ajuste_ventana)
+        self.frame4.config(bg="#A9CCE3", width=500, height=250, relief=tk.RIDGE, bd=8)
 
         # Label iteración actual
-        self.iteracion_actual = tk.Label(master=self.frame4, bg='#A9CCE3', font=('math', 18, 'bold italic'),
-                                         text="", width=31)
+        self.iteracion_actual = tk.Label(master=self.frame4, bg='#A9CCE3', font=('math', 18, 'bold italic'), text="",
+                                         width=31)
         # Boton first
-        self.boton_first = tk.Button(master=self.frame4, text='<<', command=self.goFirst,
-                                     bg='#F4D03F', font=('math', 15, 'bold italic'), width=7)
+        self.boton_first = tk.Button(master=self.frame4, text='<<', command=self.goFirst, bg='#F4D03F',
+                                     font=('math', 15, 'bold italic'), width=7)
         # Boton back
-        self.boton_back = tk.Button(master=self.frame4, text='<', command=self.goBack,
-                                    bg='#F4D03F', font=('math', 15, 'bold italic'), width=7)
+        self.boton_back = tk.Button(master=self.frame4, text='<', command=self.goBack, bg='#F4D03F',
+                                    font=('math', 15, 'bold italic'), width=7)
         # Boton forward
-        self.boton_forward = tk.Button(master=self.frame4, text='>', command=self.goForward,
-                                       bg='#F4D03F', font=('math', 15, 'bold italic'), width=7)
+        self.boton_forward = tk.Button(master=self.frame4, text='>', command=self.goForward, bg='#F4D03F',
+                                       font=('math', 15, 'bold italic'), width=7)
         # Boton last
-        self.boton_last = tk.Button(master=self.frame4, text='>>', command=self.goLast,
-                                    bg='#F4D03F', font=('math', 15, 'bold italic'), width=7)
+        self.boton_last = tk.Button(master=self.frame4, text='>>', command=self.goLast, bg='#F4D03F',
+                                    font=('math', 15, 'bold italic'), width=7)
 
         # Label modo de gráfica
         self.modo_grafica = tk.Label(master=self.frame4, bg='#A9CCE3', font=('math', 18, 'bold italic'),
@@ -186,8 +178,8 @@ class Ventana:
 
         # ---------- Frame inferior derecho ----------
         self.frame5 = tk.Frame(master=self.window)
-        self.frame5.place(x=800 * self.ratio_ventana, y=500 * self.ratio_ventana)
-        self.frame5.config(bg="#A9CCE3", width=300 * self.ratio_ventana, height=250 * self.ratio_ventana,
+        self.frame5.place(x=800, y=500-self.ajuste_ventana)
+        self.frame5.config(bg="#A9CCE3", width=300, height=250,
                            relief=tk.RIDGE, bd=8)
 
         nombreParametros = ["α", "β", "γ", "# iter"]
@@ -207,13 +199,13 @@ class Ventana:
             self.parametros.append(par)
 
         self.editar_parametros_button = tk.Button(master=self.frame5, text='Editar parámetros',
-                                                  command=self.habilitarParametros,
-                                                  bg='#A9CCE3', font=('math', 15, 'bold italic'), width=20)
+                                                  command=self.habilitarParametros, bg='#A9CCE3',
+                                                  font=('math', 15, 'bold italic'), width=20)
         self.editar_parametros_button.grid(pady=8, row=8, column=1, columnspan=2, padx=(17, 17))
 
         self.actualizar_parametros_button = tk.Button(master=self.frame5, text='Actualizar parámetros',
-                                                      command=self.actualizarParametros,
-                                                      bg='#A9CCE3', font=('math', 15, 'bold italic'), width=20)
+                                                      command=self.actualizarParametros, bg='#A9CCE3',
+                                                      font=('math', 15, 'bold italic'), width=20)
 
     def cargarModelo(self):
         filename = askopenfilename(initialdir='.', filetypes=(('Archivos de texto', '*.txt'),))
@@ -243,13 +235,13 @@ class Ventana:
                 self.Model.history.append([float(i) for i in file.readline()[:-1].replace("[", "").replace("]", "")
                                           .replace(" ", "").split(",")])
 
-            self.fig = plt.figure(figsize=(8, 5), dpi=100)
+            height = 5 if self.ajuste_ventana == 0 else 4
+            self.fig = plt.figure(figsize=(8, height), dpi=100)
             self.canvas = FigureCanvasTkAgg(self.fig, self.window)
-            self.canvas.get_tk_widget().place(x=300 * self.ratio_ventana, y=0 * self.ratio_ventana)
-            nx.set_node_attributes(
-                self.Graph.G,
-                {i: self.Model.history[self.Model.t][i] for i in range(len(self.Model.history[self.Model.t]))},
-                name='value')
+            self.canvas.get_tk_widget().place(x=300, y=0)
+            nx.set_node_attributes(self.Graph.G, {i: self.Model.history[self.Model.t][i] for i in
+                                                  range(len(self.Model.history[self.Model.t]))},
+                                   name='value')
             self.grafica()
 
             self.quitarBotonesPre()
@@ -280,6 +272,9 @@ class Ventana:
 
             casos_de_prueba = []
 
+            # El virus siempre está presente en la red
+            casos_de_prueba.append((0.40, 0.10, 0.18))
+
             # Se elimina el virus
             casos_de_prueba.append((0.10, 0.50, 0.05))
 
@@ -300,7 +295,7 @@ class Ventana:
                     f.write(str(self.Graph.n) + "\n")
 
                 start_time = time.time()
-                params = [i, j, k, 100]
+                params = [i, j, k, 50]
                 print(params)
                 self.Model = Modelo(self.Graph.adjM, self.Graph, params)
                 self.Model.run(True)
@@ -432,7 +427,7 @@ class Ventana:
         self.boton_last.grid_forget()
 
         self.mostrar_modelo.grid(pady=9, row=1, column=1, padx=(17, 17))
-        self.mostrar_ecuaciones_modelo.grid(pady=9, row=2, column=1, padx=(17, 17))
+        self.mostrar_ecuaciones_modelo.grid(pady=(9, 172-self.ajuste_ventana), row=2, column=1, padx=(17, 17))
         self.mostrar_grafica_evolucion.grid_forget()
         self.volver_modelo.grid_forget()
         self.nueva_ejecucion.grid_forget()
@@ -453,9 +448,10 @@ class Ventana:
         if inputDialog.val is not None:
             self.Graph = Grafo(2, [str(inputDialog.val), str(inputDialog.val2)], self)
 
-            self.fig = plt.figure(figsize=(8, 5), dpi=100)
+            height = 5 if self.ajuste_ventana == 0 else 4
+            self.fig = plt.figure(figsize=(8, height), dpi=100)
             self.canvas = FigureCanvasTkAgg(self.fig, self.window)
-            self.canvas.get_tk_widget().place(x=300 * self.ratio_ventana, y=0 * self.ratio_ventana)
+            self.canvas.get_tk_widget().place(x=300, y=0)
 
             self.grafica()
 
@@ -466,9 +462,10 @@ class Ventana:
             self.Graph = Grafo(1, [filename], self)
 
             if len(self.Graph.nodes) > 0:
-                self.fig = plt.figure(figsize=(8, 5), dpi=100)
+                height = 5 if self.ajuste_ventana == 0 else 4
+                self.fig = plt.figure(figsize=(8, height), dpi=100)
                 self.canvas = FigureCanvasTkAgg(self.fig, self.window)
-                self.canvas.get_tk_widget().place(x=300 * self.ratio_ventana, y=0 * self.ratio_ventana)
+                self.canvas.get_tk_widget().place(x=300, y=0)
 
                 self.grafica()
             else:
@@ -525,42 +522,38 @@ class Ventana:
         self.mostrar_modelo.grid_forget()
         self.mostrar_ecuaciones_modelo.grid_forget()
         self.mostrar_grafica_evolucion.grid(pady=9, row=1, column=1, padx=(17, 17))
-        self.nueva_ejecucion.grid(pady=(9, 172), row=2, column=1, padx=(17, 17))
+        self.nueva_ejecucion.grid(pady=(9, 172-self.ajuste_ventana), row=2, column=1, padx=(17, 17))
 
     def goFirst(self):
         if self.Model.t > 0:
             self.Model.t = 0
-            nx.set_node_attributes(
-                self.Graph.G,
-                {i: self.Model.history[self.Model.t][i] for i in range(len(self.Model.history[self.Model.t]))},
-                name='value')
+            nx.set_node_attributes(self.Graph.G, {i: self.Model.history[self.Model.t][i] for i in
+                                                  range(len(self.Model.history[self.Model.t]))},
+                                   name='value')
             self.grafica()
 
     def goBack(self) -> None:
         if self.Model.t > 0:
             self.Model.t -= 1
-            nx.set_node_attributes(
-                self.Graph.G,
-                {i: self.Model.history[self.Model.t][i] for i in range(len(self.Model.history[self.Model.t]))},
-                name='value')
+            nx.set_node_attributes(self.Graph.G, {i: self.Model.history[self.Model.t][i] for i in
+                                                  range(len(self.Model.history[self.Model.t]))},
+                                   name='value')
             self.grafica()
 
     def goForward(self) -> None:
         if self.Model.t < self.Model.iterations:
             self.Model.t += 1
-            nx.set_node_attributes(
-                self.Graph.G,
-                {i: self.Model.history[self.Model.t][i] for i in range(len(self.Model.history[self.Model.t]))},
-                name='value')
+            nx.set_node_attributes(self.Graph.G, {i: self.Model.history[self.Model.t][i] for i in
+                                                  range(len(self.Model.history[self.Model.t]))},
+                                   name='value')
             self.grafica()
 
     def goLast(self) -> None:
         if self.Model.t < self.Model.iterations:
             self.Model.t = int(self.Model.iterations)
-            nx.set_node_attributes(
-                self.Graph.G,
-                {i: self.Model.history[self.Model.t][i] for i in range(len(self.Model.history[self.Model.t]))},
-                name='value')
+            nx.set_node_attributes(self.Graph.G, {i: self.Model.history[self.Model.t][i] for i in
+                                                  range(len(self.Model.history[self.Model.t]))},
+                                   name='value')
             self.grafica()
 
     # Función que grafica las funciones seleccionadas utilizando la función plot de matplotlib.pyplot
@@ -568,14 +561,9 @@ class Ventana:
         plt.clf()
 
         mapper = mpl.cm.ScalarMappable(norm=self.colors, cmap=self.cmap)
-        nx.draw(self.Graph.G,
-                self.Graph.pos,
-                node_color=[mapper.to_rgba(self.Graph.G.nodes[i]['value'])
-                            for i in self.Graph.G.nodes],
-                with_labels=True,
-                font_color='black',
-                edge_cmap=mpl.cm.coolwarm,
-                vmin=0, vmax=1)
+        nx.draw(self.Graph.G, self.Graph.pos, node_color=[mapper.to_rgba(self.Graph.G.nodes[i]['value'])
+                                                          for i in self.Graph.G.nodes], with_labels=True,
+                font_color='black', edge_cmap=mpl.cm.coolwarm, vmin=0, vmax=1)
 
         plt.legend(handles=self.custom_lines, labelspacing=1.2)
 
