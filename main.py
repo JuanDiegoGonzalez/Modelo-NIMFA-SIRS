@@ -4,6 +4,7 @@
 # ----------------------------------------------------
 
 # -------------------- Imports -----------------------
+import os
 import time
 import numpy as np
 import tkinter as tk
@@ -87,7 +88,7 @@ class Ventana:
         self.guardar_modelo.grid(pady=9, row=2, column=1, padx=(17, 17))
 
         # Boton cargar datos de prueba
-        self.cargar_datos_prueba = tk.Button(master=self.frame1, text='Cargar datos de prueba',
+        self.cargar_datos_prueba = tk.Button(master=self.frame1, text='Ejecutar datos de prueba',
                                              command=self.ejecutarConjuntoDatosPrueba,
                                              bg='#A9CCE3', font=('math', 15, 'bold italic'), width=20)
         self.cargar_datos_prueba.grid(pady=(9, 11), row=3, column=1, padx=(17, 17))
@@ -220,28 +221,48 @@ class Ventana:
             # Poner mensaje ejecutando
             # Barra de progreso/porcentaje
 
-            with open("Datos de Prueba/Caso{}Nodos.txt".format(self.Graph.n), 'w+', encoding='utf-8') as f:
-                ...
+            if not os.path.exists("./Datos de Prueba/{}nodos".format(self.Graph.n)):
+                os.makedirs("./Datos de Prueba/{}nodos".format(self.Graph.n))
+
+            file = open("./Datos de Prueba/{}nodos/Grafo.json".format(self.Graph.n), "w")
+            self.Graph.save_graph(file)
+            file.close()
 
             alfa = np.arange(0.0, 0.6, 0.1)
             beta = np.arange(0.0, 0.6, 0.1)
             gamma = np.arange(0.0, 0.6, 0.1)
 
+            # Se elimina el virus (ver nodo #3)
+            #g = Grafo(1, path)
+            #model = Modelo(g.adjM, g, 0.33, 0.16, 0.08)
+
+            # El virus infecta la red completa
+            # g = Grafo(2, str(30))
+            # model = Modelo(g.adjM, g, 0.5, 0.05, 0.06)
+
+            # SIR model
+            # g = Grafo(2, str(30))
+            # model = Modelo(g.adjM, g, 0.5, 0.25, 0.00)
+
             global_start_time = time.time()
             for i in alfa:
                 for j in beta:
                     for k in gamma:
+                        with open("Datos de Prueba/{}nodos/{:.1f}-{:.1f}-{:.1f}.txt".format(self.Graph.n, i, j, k), 'w+', encoding='utf-8') as f:
+                            f.write(str(self.Graph.n) + "\n")
+
                         start_time = time.time()
                         params = [i, j, k, 100]
                         print(params)
                         self.Model = Modelo(self.Graph.adjM, self.Graph, params)
                         self.Model.run(True)
                         print("--- %s seconds ---" % (time.time() - start_time))
-                        with open("Datos de Prueba/Caso{}Nodos.txt".format(self.Graph.n), 'a', encoding='utf-8') as f:
-                            f.write("--- %s seconds ---\n" % (time.time() - start_time))
+
+                        with open("Datos de Prueba/{}nodos/{:.1f}-{:.1f}-{:.1f}.txt".format(self.Graph.n, i, j, k), 'a', encoding='utf-8') as f:
+                            f.write("--- %s segundos ---\n" % (time.time() - start_time))
             print("--- %s seconds ---" % (time.time() - global_start_time))
-            with open("Datos de Prueba/Caso{}Nodos.txt".format(self.Graph.n), 'a', encoding='utf-8') as f:
-                f.write("--- %s seconds ---\n" % (time.time() - global_start_time))
+            with open("Datos de Prueba/{}nodos/TiempoTotal.txt".format(self.Graph.n), 'w+', encoding='utf-8') as f:
+                f.write("--- %s segundos ---\n" % (time.time() - global_start_time))
 
             self.cargarBotonesPost()
 

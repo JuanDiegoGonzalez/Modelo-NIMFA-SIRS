@@ -8,7 +8,6 @@
 import numpy as np
 import networkx as nx
 import os, json, random
-import matplotlib as mpl
 
 from math import dist, inf
 from tkinter import messagebox
@@ -132,12 +131,3 @@ class Grafo:
                 resp.append(i)
 
         return resp
-
-# Función que genera un grafo de prueba en caso de que este archivo sea ejecutado
-if __name__=='__main__':
-    print("\nEsta es una ejecución de prueba para el grafo.\n")
-    print("Para ejecutar la aplicación completa debe ejecutar el archivo \"main.py\".")
-
-    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../Grafos Guardados')
-    g = Grafo(2, str(10))
-    h = Grafo(2, str(10))
