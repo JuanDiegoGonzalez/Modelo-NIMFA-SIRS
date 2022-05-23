@@ -177,7 +177,7 @@ class Ventana:
                            relief=tk.RIDGE, bd=8)
 
         nombreParametros = ["α", "β", "γ", "# iter"]
-        defaultParametros = [0.33, 0.16, 0.08, 20]
+        defaultParametros = [0.40, 0.10, 0.18, 20]
         self.parametros = []
         for i in range(4):
             # Label parámetro
@@ -205,7 +205,11 @@ class Ventana:
         ...
 
     def guardarModelo(self):
-        ...
+        if self.Model:
+            self.Model.exportarDatos()
+            messagebox.showinfo('Guardar Modelo', "¡El modelo se ha exportado exitosamente!")
+        else:
+            messagebox.showerror('Error', "No se ha ejecutado ningún modelo")
 
     def ejecutarConjuntoDatosPrueba(self):
         if self.Graph is None:
@@ -405,6 +409,10 @@ class Ventana:
         self.iteracion_actual.grid(pady=100, row=1, column=1, columnspan=4, padx=(7, 6))
 
     def cargarBotonesPost(self):
+        self.cargar_modelo["state"] = "normal"
+        self.guardar_modelo["state"] = "normal"
+        self.cargar_datos_prueba["state"] = "normal"
+
         self.iteracion_actual.grid(pady=(100, 42), row=1, column=1, columnspan=4, padx=(7, 6))
 
         self.boton_first.grid(pady=8, row=2, column=1, padx=(1, 1))

@@ -18,27 +18,21 @@ rngSeed = 32
 np.random.seed(rngSeed)
 seed(rngSeed)
 
+
 # -------------------- Clase que representa el modelo --------------------
 class Modelo:
     # Función que declara e inicializa las variables del modelo
     def __init__(self, adjMatrix: np.array, graph: Grafo, parametros):
         self.adjMatrix = adjMatrix
         self.n = len(self.adjMatrix)
-
-        self.graph = graph
-        self.nodes_infected = []
-        self.nodes_infected.append(graph.initialInfected)
-
         self.parametros = parametros
+        self.graph = graph
 
         self.v = [0.5 for _ in range(self.n)]
         self.v[graph.initialInfected] = 1
 
         self.iterations = parametros[3]
         self.history = [[i for i in self.v]]
-        self.actualIteration = self.iterations
-
-        self.u = np.ones(self.n)
 
     # Función que ejecuta la simulación del modelo
     def run(self, test):
@@ -48,18 +42,10 @@ class Modelo:
             for i in range(self.n):
                 # Nodos susceptibles
                 if self.graph.nodes[i]["value"] == 0.5:
-                    #A = np.diag(self.u - self.delta)
-                    #B = np.diag(self.u - vinit)
-
-                    #C = self.matrixMul([A, vinit])
-                    #D = self.matrixMul([B, self.beta, vinit])
-
-                    for _ in self.graph.get_infected_neigboors(i):
-                        if random.randint(1, 100) <= self.parametros[0] * 100:
-                            temporal_nodes[i]["value"] = 1
-                            self.v[i] = 1
-
-
+                    alfa = self.calcularAlfa(len(self.graph.get_infected_neigboors(i)))
+                    if random.randint(1, 100) <= alfa * 100:
+                        temporal_nodes[i]["value"] = 1
+                        self.v[i] = 1
 
                 # Nodos infectados
                 elif self.graph.nodes[i]["value"] == 1:
@@ -81,14 +67,18 @@ class Modelo:
             if not test:
                 time.sleep(0.25)
 
-        if not test:
-            self.exportarDatos()
-        else:
+        if test:
             self.exportarDatosTest()
+
+    # Funcion que calcula la probabilidad de que un nodo susceptible se infecte
+    def calcularAlfa(self, d: int):
+        return 1 - ((1 - self.parametros[0]) ** d)
 
     # Función que exporta los resultados del modelo (la variable self.history)
     def exportarDatos(self):
         with open("Modelos Guardados/{}nodos.txt".format(self.n), 'w', encoding='utf-8') as f:
+            for i in self.parametros:
+                f.write(str(i) + "\n")
             for i in self.history:
                 f.write(str(i) + "\n")
 
@@ -100,6 +90,7 @@ class Modelo:
             for i in self.history:
                 f.write(str(i) + "\n")
 
+
 # Función que ejecuta un modelo de prueba en caso de que este archivo sea ejecutado
 if __name__ == '__main__':
     path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../Grafos Guardados/6Nodos.json')
@@ -109,8 +100,8 @@ if __name__ == '__main__':
     model = Modelo(g.adjM, g, 0.33, 0.16, 0.08)
 
     # El virus infecta la red completa
-    #g = Grafo(2, str(30))
-    #model = Modelo(g.adjM, g, 0.5, 0.05, 0.06)
+    # g = Grafo(2, str(30))
+    # model = Modelo(g.adjM, g, 0.5, 0.05, 0.06)
 
     # SIR model
     # g = Grafo(2, str(30))
