@@ -11,6 +11,7 @@ import tkinter as tk
 import networkx as nx
 import matplotlib as mpl
 
+from PIL import Image, ImageTk
 from tkinter import messagebox
 from matplotlib.lines import Line2D
 from matplotlib import pyplot as plt
@@ -88,10 +89,10 @@ class Ventana:
         self.guardar_modelo.grid(pady=9, row=2, column=1, padx=(17, 17))
 
         # Boton cargar datos de prueba
-        self.cargar_datos_prueba = tk.Button(master=self.frame1, text='Ejecutar datos de prueba',
-                                             command=self.ejecutarConjuntoDatosPrueba,
-                                             bg='#A9CCE3', font=('math', 15, 'bold italic'), width=20)
-        self.cargar_datos_prueba.grid(pady=(9, 11), row=3, column=1, padx=(17, 17))
+        self.ejecutar_datos_prueba = tk.Button(master=self.frame1, text='Ejecutar datos de prueba',
+                                               command=self.ejecutarConjuntoDatosPrueba,
+                                               bg='#A9CCE3', font=('math', 15, 'bold italic'), width=20)
+        self.ejecutar_datos_prueba.grid(pady=(9, 11), row=3, column=1, padx=(17, 17))
 
         # ---------- Frame izquierdo centro ----------
         self.frame2 = tk.Frame(master=self.window)
@@ -99,9 +100,17 @@ class Ventana:
         self.frame2.config(bg="#A9CCE3", width=300 * self.ratio_ventana, height=300 * self.ratio_ventana,
                            relief=tk.RIDGE, bd=8)
 
-        # Boton nueva ejecución
-        self.nueva_ejecucion = tk.Button(master=self.frame2, text='Nueva ejecución', command=self.nuevaEjecucion,
-                                         bg='#A9CCE3', font=('math', 15, 'bold italic'), width=20)
+        # Boton mostrar modelo
+        self.mostrar_modelo = tk.Button(master=self.frame2, text='Mostrar modelo',
+                                        command=self.mostrarModelo,
+                                        bg='#A9CCE3', font=('math', 15, 'bold italic'), width=20)
+        self.mostrar_modelo.grid(pady=9, row=1, column=1, padx=(17, 17))
+
+        # Boton mostrar ecuaciones del modelo
+        self.mostrar_ecuaciones_modelo = tk.Button(master=self.frame2, text='Ecuaciones del modelo',
+                                                   command=self.mostrarEcuacionesModelo,
+                                                   bg='#A9CCE3', font=('math', 15, 'bold italic'), width=20)
+        self.mostrar_ecuaciones_modelo.grid(pady=(9, 172), row=2, column=1, padx=(17, 17))
 
         # Boton mostrar gráfica de evolución
         self.mostrar_grafica_evolucion = tk.Button(master=self.frame2, text='Gráfica de evolución',
@@ -112,6 +121,10 @@ class Ventana:
         self.volver_modelo = tk.Button(master=self.frame2, text='Volver al modelo',
                                        command=self.volverModelo,
                                        bg='#A9CCE3', font=('math', 15, 'bold italic'), width=20)
+
+        # Boton nueva ejecución
+        self.nueva_ejecucion = tk.Button(master=self.frame2, text='Nueva ejecución', command=self.nuevaEjecucion,
+                                         bg='#A9CCE3', font=('math', 15, 'bold italic'), width=20)
 
         # ---------- Frame inferior izquierdo ----------
         self.frame3 = tk.Frame(master=self.window)
@@ -309,6 +322,20 @@ class Ventana:
             self.Graph = None
             self.Model = None
 
+    def mostrarModelo(self):
+        root = tk.Toplevel()
+        img = ImageTk.PhotoImage(Image.open("./assets/Modelo.png"))
+        panel = tk.Label(root, image=img)
+        panel.pack(side="bottom", fill="both", expand="yes")
+        root.mainloop()
+
+    def mostrarEcuacionesModelo(self):
+        root = tk.Toplevel()
+        img = ImageTk.PhotoImage(Image.open("./assets/Ecuaciones Modelo.png"))
+        panel = tk.Label(root, image=img)
+        panel.pack(side="bottom", fill="both", expand="yes")
+        root.mainloop()
+
     def conInterpolacion(self):
         self.graficaEvolucion(True)
 
@@ -352,6 +379,9 @@ class Ventana:
         self.canvas.draw()
         self.window.update()
 
+        self.cargar_modelo["state"] = "disabled"
+        self.guardar_modelo["state"] = "disabled"
+        self.ejecutar_datos_prueba["state"] = "disabled"
         self.mostrar_grafica_evolucion.grid_forget()
         self.volver_modelo.grid(pady=9, row=1, column=1, padx=(17, 17))
 
@@ -367,6 +397,9 @@ class Ventana:
 
     def volverModelo(self):
         self.grafica()
+        self.cargar_modelo["state"] = "normal"
+        self.guardar_modelo["state"] = "normal"
+        self.ejecutar_datos_prueba["state"] = "normal"
         self.mostrar_grafica_evolucion.grid(pady=9, row=1, column=1, padx=(17, 17))
         self.volver_modelo.grid_forget()
 
@@ -383,12 +416,14 @@ class Ventana:
     def nuevaEjecucion(self):
         self.cargar_modelo["state"] = "normal"
         self.guardar_modelo["state"] = "normal"
-        self.cargar_datos_prueba["state"] = "normal"
+        self.ejecutar_datos_prueba["state"] = "normal"
         self.crear_nuevo_grafo["state"] = "normal"
         self.cargar_grafo["state"] = "normal"
         self.guardar_grafo["state"] = "normal"
         self.ejecutar_grafo["state"] = "normal"
         self.editar_parametros_button["state"] = "normal"
+        self.mostrar_modelo["state"] = "normal"
+        self.mostrar_ecuaciones_modelo["state"] = "normal"
 
         self.iteracion_actual.grid_forget()
         self.boton_first.grid_forget()
@@ -396,6 +431,8 @@ class Ventana:
         self.boton_forward.grid_forget()
         self.boton_last.grid_forget()
 
+        self.mostrar_modelo.grid(pady=9, row=1, column=1, padx=(17, 17))
+        self.mostrar_ecuaciones_modelo.grid(pady=9, row=2, column=1, padx=(17, 17))
         self.mostrar_grafica_evolucion.grid_forget()
         self.volver_modelo.grid_forget()
         self.nueva_ejecucion.grid_forget()
@@ -463,18 +500,20 @@ class Ventana:
     def quitarBotonesPre(self):
         self.cargar_modelo["state"] = "disabled"
         self.guardar_modelo["state"] = "disabled"
-        self.cargar_datos_prueba["state"] = "disabled"
+        self.ejecutar_datos_prueba["state"] = "disabled"
         self.crear_nuevo_grafo["state"] = "disabled"
         self.cargar_grafo["state"] = "disabled"
         self.guardar_grafo["state"] = "disabled"
         self.ejecutar_grafo["state"] = "disabled"
         self.editar_parametros_button["state"] = "disabled"
+        self.mostrar_modelo["state"] = "disabled"
+        self.mostrar_ecuaciones_modelo["state"] = "disabled"
         self.iteracion_actual.grid(pady=100, row=1, column=1, columnspan=4, padx=(7, 6))
 
     def cargarBotonesPost(self):
         self.cargar_modelo["state"] = "normal"
         self.guardar_modelo["state"] = "normal"
-        self.cargar_datos_prueba["state"] = "normal"
+        self.ejecutar_datos_prueba["state"] = "normal"
 
         self.iteracion_actual.grid(pady=(100, 42), row=1, column=1, columnspan=4, padx=(7, 6))
 
@@ -483,8 +522,10 @@ class Ventana:
         self.boton_forward.grid(pady=8, row=2, column=3, padx=(1, 1))
         self.boton_last.grid(pady=8, row=2, column=4, padx=(1, 1))
 
+        self.mostrar_modelo.grid_forget()
+        self.mostrar_ecuaciones_modelo.grid_forget()
         self.mostrar_grafica_evolucion.grid(pady=9, row=1, column=1, padx=(17, 17))
-        self.nueva_ejecucion.grid(pady=9, row=2, column=1, padx=(17, 17))
+        self.nueva_ejecucion.grid(pady=(9, 172), row=2, column=1, padx=(17, 17))
 
     def goFirst(self):
         if self.Model.t > 0:
@@ -566,7 +607,7 @@ class Ventana:
     def habilitarParametros(self):
         self.cargar_modelo["state"] = "disabled"
         self.guardar_modelo["state"] = "disabled"
-        self.cargar_datos_prueba["state"] = "disabled"
+        self.ejecutar_datos_prueba["state"] = "disabled"
         self.crear_nuevo_grafo["state"] = "disabled"
         self.cargar_grafo["state"] = "disabled"
         self.guardar_grafo["state"] = "disabled"
@@ -596,7 +637,7 @@ class Ventana:
 
             self.cargar_modelo["state"] = "normal"
             self.guardar_modelo["state"] = "normal"
-            self.cargar_datos_prueba["state"] = "normal"
+            self.ejecutar_datos_prueba["state"] = "normal"
             self.crear_nuevo_grafo["state"] = "normal"
             self.cargar_grafo["state"] = "normal"
             self.guardar_grafo["state"] = "normal"
