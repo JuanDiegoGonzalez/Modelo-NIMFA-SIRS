@@ -275,8 +275,11 @@ class Ventana:
 
             casos_de_prueba = []
 
-            # El virus siempre está presente en la red
+            # El virus siempre está presente en la red, con una infección rápida
             casos_de_prueba.append((0.40, 0.10, 0.18))
+
+            # El virus siempre está presente en la red, con una infección lenta
+            casos_de_prueba.append((0.08, 0.08, 0.5))
 
             # Se elimina el virus
             casos_de_prueba.append((0.10, 0.50, 0.05))

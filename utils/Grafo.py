@@ -55,7 +55,7 @@ class Grafo:
         else:
             # Inicialización de atributos
             self.n = int(init[0])
-            RC = int(init[1]) + 5
+            self.RC = int(init[1]) + 5
             self.pos = {i: (inf, inf) for i in range(self.n)}
             self.pos[0] = (uniform(0, 100), uniform(0, 100))
             self.adjM = np.zeros((self.n, self.n), int)
@@ -76,7 +76,7 @@ class Grafo:
                     for j in range(self.n):
                         if self.pos[j] != (inf, inf) and j != i:
                             dij = dist(self.pos[i], self.pos[j])
-                            if dij <= RC:
+                            if dij <= self.RC:
                                 flag = False
                                 break
 
@@ -85,7 +85,7 @@ class Grafo:
                 self.nodes[i]["pos"] = self.pos[i]
                 for j in range(self.n):
                     dij = dist(self.pos[i], self.pos[j])
-                    if dij <= RC and i != j:
+                    if dij <= self.RC and i != j:
                         self.adjM[i, j] = 1
                         self.nodes[i]["adjList"][j] = 1
 
