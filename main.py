@@ -15,8 +15,8 @@ from PIL import Image, ImageTk
 from tkinter import messagebox
 from matplotlib.lines import Line2D
 from matplotlib import pyplot as plt
+from tkinter.filedialog import askopenfilename
 from scipy.interpolate import make_interp_spline
-from tkinter.filedialog import askopenfilename, asksaveasfile
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg)
 
 from utils.Grafo import Grafo
@@ -94,7 +94,7 @@ class Ventana:
         # ---------- Frame izquierdo centro ----------
         self.frame2 = tk.Frame(master=self.window)
         self.frame2.place(x=0, y=200)
-        self.frame2.config(bg="#A9CCE3", width=300, height=300-self.ajuste_ventana, relief=tk.RIDGE, bd=8)
+        self.frame2.config(bg="#A9CCE3", width=300, height=300 - self.ajuste_ventana, relief=tk.RIDGE, bd=8)
 
         # Boton mostrar modelo
         self.mostrar_modelo = tk.Button(master=self.frame2, text='Mostrar modelo', command=self.mostrarModelo,
@@ -105,7 +105,7 @@ class Ventana:
         self.mostrar_ecuaciones_modelo = tk.Button(master=self.frame2, text='Ecuaciones del modelo',
                                                    command=self.mostrarEcuacionesModelo, bg='#A9CCE3',
                                                    font=('math', 15, 'bold italic'), width=20)
-        self.mostrar_ecuaciones_modelo.grid(pady=(9, 172-self.ajuste_ventana), row=2, column=1, padx=(17, 17))
+        self.mostrar_ecuaciones_modelo.grid(pady=(9, 172 - self.ajuste_ventana), row=2, column=1, padx=(17, 17))
 
         # Boton mostrar gráfica de evolución
         self.mostrar_grafica_evolucion = tk.Button(master=self.frame2, text='Gráfica de evolución',
@@ -122,7 +122,7 @@ class Ventana:
 
         # ---------- Frame inferior izquierdo ----------
         self.frame3 = tk.Frame(master=self.window)
-        self.frame3.place(x=0, y=500-self.ajuste_ventana)
+        self.frame3.place(x=0, y=500 - self.ajuste_ventana)
         self.frame3.config(bg="#A9CCE3", width=300, height=250, relief=tk.RIDGE, bd=8)
 
         # Boton crear nuevo grafo
@@ -147,7 +147,7 @@ class Ventana:
 
         # ---------- Frame inferior centro ----------
         self.frame4 = tk.Frame(master=self.window)
-        self.frame4.place(x=300, y=500-self.ajuste_ventana)
+        self.frame4.place(x=300, y=500 - self.ajuste_ventana)
         self.frame4.config(bg="#A9CCE3", width=500, height=250, relief=tk.RIDGE, bd=8)
 
         # Label iteración actual
@@ -178,7 +178,7 @@ class Ventana:
 
         # ---------- Frame inferior derecho ----------
         self.frame5 = tk.Frame(master=self.window)
-        self.frame5.place(x=800, y=500-self.ajuste_ventana)
+        self.frame5.place(x=800, y=500 - self.ajuste_ventana)
         self.frame5.config(bg="#A9CCE3", width=300, height=250,
                            relief=tk.RIDGE, bd=8)
 
@@ -209,17 +209,19 @@ class Ventana:
 
     # Función que carga un modelo de un archivo .txt generado previamente
     def cargarModelo(self):
+        if hasattr(self, 'canvas'):
+            self.canvas.get_tk_widget().place_forget()
         filename = askopenfilename(initialdir='.', filetypes=(('Archivos de texto', '*.txt'),))
         if filename:
             file = open(filename)
 
             n = file.readline()
+            RC = file.readline()
             path = filename.split("/")
             path_grafo = ""
             for i in range(len(path) - 1):
                 path_grafo += "{}/".format(path[i])
-            print("{}{}nodos.json".format(path_grafo, n[:-1]))
-            self.Graph = Grafo(1, ["{}{}nodos.json".format(path_grafo, n[:-1])], self)
+            self.Graph = Grafo(1, ["{}{}nodos{}densidad.json".format(path_grafo, n[:-1], RC[:-1])], self)
 
             params = [float(file.readline()[:-1]), float(file.readline()[:-1]), float(file.readline()[:-1]),
                       int(file.readline()[:-1].split(".")[0])]
@@ -259,13 +261,20 @@ class Ventana:
     # Función que ejecuta un conjunto de datos de prueba
     def ejecutarConjuntoDatosPrueba(self):
         if self.Graph is None:
-            self.crearNuevoGrafo()
+            inputDialog = DialogoCrearGrafo(self.window)
+            self.window.wait_window(inputDialog.top)
+
+            if inputDialog.val is not None and inputDialog.val2 is not None:
+                self.Graph = Grafo(2, [str(inputDialog.val), str(inputDialog.val2)], self)
 
         if self.Graph is not None:
-            if not os.path.exists("./Datos de Prueba/{}nodos".format(self.Graph.n)):
-                os.makedirs("./Datos de Prueba/{}nodos".format(self.Graph.n))
+            if not os.path.exists("./Datos de Prueba/{}nodos{}densidad".format(self.Graph.n, self.Graph.RC)):
+                os.makedirs("./Datos de Prueba/{}nodos{}densidad".format(self.Graph.n, self.Graph.RC))
 
-            file = open("./Datos de Prueba/{}nodos/{}nodos.json".format(self.Graph.n, self.Graph.n), "w")
+            file = open("./Datos de Prueba/{}nodos{}densidad/{}nodos{}densidad.json".format(self.Graph.n, self.Graph.RC,
+                                                                                            self.Graph.n,
+                                                                                            self.Graph.RC),
+                        "w")
             self.Graph.save_graph(file)
             file.close()
 
@@ -287,18 +296,30 @@ class Ventana:
             # El virus infecta la red completa
             casos_de_prueba.append((0.50, 0.10, 0.18))
 
-            # SIR model
+            # Modelo SIR
             casos_de_prueba.append((0.50, 0.25, 0.00))
+
+            filename = "./Datos de Prueba/{}nodos{}densidad/{}nodos{}densidad.json".format(self.Graph.n,
+                                                                                           self.Graph.RC,
+                                                                                           self.Graph.n,
+                                                                                           self.Graph.RC)
+            grafos = [Grafo(1, [filename], self) for _ in casos_de_prueba]
 
             global_start_time = time.time()
             # for i in alfa:
             #    for j in beta:
             #        for k in gamma:
+            grafo = -1
             for caso in casos_de_prueba:
+                grafo += 1
+                self.Graph = grafos[grafo]
+
                 i, j, k = caso
-                with open("Datos de Prueba/{}nodos/{:.2f}-{:.2f}-{:.2f}.txt".format(self.Graph.n, i, j, k), 'w+',
-                          encoding='utf-8') as f:
+                with open("Datos de Prueba/{}nodos{}densidad/{:.2f}-{:.2f}-{:.2f}.txt".format(self.Graph.n,
+                                                                                              self.Graph.RC, i, j, k),
+                          'w+', encoding='utf-8') as f:
                     f.write(str(self.Graph.n) + "\n")
+                    f.write(str(self.Graph.RC) + "\n")
 
                 start_time = time.time()
                 params = [i, j, k, 50]
@@ -307,18 +328,17 @@ class Ventana:
                 self.Model.run(True)
                 print("--- %s seconds ---" % (time.time() - start_time))
 
-                with open("Datos de Prueba/{}nodos/{:.2f}-{:.2f}-{:.2f}.txt".format(self.Graph.n, i, j, k), 'a',
-                          encoding='utf-8') as f:
+                with open(
+                        "Datos de Prueba/{}nodos{}densidad/{:.2f}-{:.2f}-{:.2f}.txt".format(self.Graph.n,
+                                                                                            self.Graph.RC, i, j, k),
+                        'a', encoding='utf-8') as f:
                     f.write("--- %s segundos ---\n" % (time.time() - start_time))
             print("--- %s seconds ---" % (time.time() - global_start_time))
-            with open("Datos de Prueba/{}nodos/TiempoTotal.txt".format(self.Graph.n), 'w+', encoding='utf-8') as f:
+            with open("Datos de Prueba/{}nodos{}densidad/TiempoTotal.txt".format(self.Graph.n, self.Graph.RC), 'w+',
+                      encoding='utf-8') as f:
                 f.write("--- %s segundos ---\n" % (time.time() - global_start_time))
 
             messagebox.showinfo('Ejecutar datos de prueba', "¡Los datos de prueba se han ejecutado satisfactoriamente!")
-
-            plt.clf()
-            self.canvas.draw()
-            self.window.update()
 
             self.Graph = None
             self.Model = None
@@ -439,7 +459,7 @@ class Ventana:
         self.boton_last.grid_forget()
 
         self.mostrar_modelo.grid(pady=9, row=1, column=1, padx=(17, 17))
-        self.mostrar_ecuaciones_modelo.grid(pady=(9, 172-self.ajuste_ventana), row=2, column=1, padx=(17, 17))
+        self.mostrar_ecuaciones_modelo.grid(pady=(9, 172 - self.ajuste_ventana), row=2, column=1, padx=(17, 17))
         self.mostrar_grafica_evolucion.grid_forget()
         self.volver_modelo.grid_forget()
         self.nueva_ejecucion.grid_forget()
@@ -457,7 +477,7 @@ class Ventana:
         inputDialog = DialogoCrearGrafo(self.window)
         self.window.wait_window(inputDialog.top)
 
-        if inputDialog.val is not None:
+        if inputDialog.val is not None and inputDialog.val2 is not None:
             self.Graph = Grafo(2, [str(inputDialog.val), str(inputDialog.val2)], self)
 
             height = 5 if self.ajuste_ventana == 0 else 4
@@ -486,11 +506,10 @@ class Ventana:
     # Función que guarda/exporta en un archivo el grafo cargado actualmente
     def guardarGrafo(self):
         if self.Graph:
-            file = asksaveasfile(initialdir='./Grafos Guardados', mode='w', defaultextension=".json",
-                                 filetypes=(('Archivos JSON', '*.json'),))
-            if file:
-                self.Graph.save_graph(file)
-                file.close()
+            file = open("./Grafos Guardados/{}nodos{}densidad.json".format(self.Graph.n, self.Graph.RC), "w")
+            self.Graph.save_graph(file)
+            file.close()
+            messagebox.showinfo('Guardar Grafo', "¡El grafo se ha exportado exitosamente!")
         else:
             messagebox.showerror('Error', "No se ha creado ningun grafo.")
 
@@ -536,7 +555,7 @@ class Ventana:
         self.mostrar_modelo.grid_forget()
         self.mostrar_ecuaciones_modelo.grid_forget()
         self.mostrar_grafica_evolucion.grid(pady=9, row=1, column=1, padx=(17, 17))
-        self.nueva_ejecucion.grid(pady=(9, 172-self.ajuste_ventana), row=2, column=1, padx=(17, 17))
+        self.nueva_ejecucion.grid(pady=(9, 172 - self.ajuste_ventana), row=2, column=1, padx=(17, 17))
 
     # Función que muestra la primera iteración del modelo actual
     def goFirst(self):

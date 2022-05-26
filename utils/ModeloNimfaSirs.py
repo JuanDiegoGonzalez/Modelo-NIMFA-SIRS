@@ -61,8 +61,7 @@ class Modelo:
 
             self.Graph.nodes = [a.copy() for a in temporal_nodes]
             self.t += 1
-            if not test:
-                self.Graph.updateValue(self.v)
+            self.Graph.updateValue(self.v, test)
             self.history.append([i for i in self.v])
             if not test:
                 time.sleep(0.25)
@@ -76,12 +75,13 @@ class Modelo:
 
     # Función que exporta los resultados del modelo (la variable self.history)
     def exportarDatos(self):
-        with open("Modelos Guardados/{}nodos.txt".format(self.n), 'w', encoding='utf-8') as f:
-            file = open("./Modelos Guardados/{}nodos.json".format(self.n), "w")
+        with open("Modelos Guardados/{}nodos{}densidad.txt".format(self.n, self.Graph.RC), 'w', encoding='utf-8') as f:
+            file = open("./Modelos Guardados/{}nodos{}densidad.json".format(self.n, self.Graph.RC), "w")
             self.Graph.save_graph(file)
             file.close()
-            f.write(str(self.n) + "\n")
 
+            f.write(str(self.n) + "\n")
+            f.write(str(self.Graph.RC) + "\n")
             for i in self.parametros:
                 f.write(str(i) + "\n")
             for i in self.history:
@@ -89,8 +89,10 @@ class Modelo:
 
     # Función que exporta los parametros y resultados del test (la variable self.history)
     def exportarDatosTest(self):
-        with open("Datos de Prueba/{}nodos/{:.2f}-{:.2f}-{:.2f}.txt".format(self.Graph.n, self.parametros[0],
-                                                                            self.parametros[1], self.parametros[2]),
+        with open("Datos de Prueba/{}nodos{}densidad/{:.2f}-{:.2f}-{:.2f}.txt".format(self.n, self.Graph.RC,
+                                                                                      self.parametros[0],
+                                                                                      self.parametros[1],
+                                                                                      self.parametros[2]),
                   'a', encoding='utf-8') as f:
             for i in self.parametros:
                 f.write(str(i) + "\n")

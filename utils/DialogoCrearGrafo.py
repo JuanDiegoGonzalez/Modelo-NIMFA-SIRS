@@ -17,7 +17,7 @@ class DialogoCrearGrafo:
 
         top = self.top = tk.Toplevel(parent)
 
-        self.myLabel = tk.Label(top, text='Ingrese el numero de nodos (entre 2 y 100):')
+        self.myLabel = tk.Label(top, text='Ingrese el numero de nodos (entre 2 y 1000000):')
         self.myLabel.pack()
 
         vldt_ifnum_cmd = (self.top.register(self.validate), '%S')
@@ -46,8 +46,8 @@ class DialogoCrearGrafo:
 
     # Función que envía los valores ingresados a la ventana principal
     def send(self):
-        if self.entry.get() != "":
-            if (2 <= int(self.entry.get()) <= 100) and (0 <= int(self.entry2.get()) <= 40):
+        if self.entry.get() != "" and self.entry2.get() != "":
+            if (2 <= int(self.entry.get()) <= 1000000) and (0 <= int(self.entry2.get()) <= 40):
                 self.val = self.entry.get()
                 self.val2 = self.entry2.get()
                 self.top.destroy()

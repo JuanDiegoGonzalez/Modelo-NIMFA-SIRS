@@ -47,6 +47,7 @@ class Grafo:
                         if self.graph_data[i]["value"] == 1:
                             self.initialInfected = i
                     self.name = init[0]
+                    self.RC = int(init[0].split("nodos")[1].split("densidad")[0])
             except Exception:
                 messagebox.showerror('Error', "El archivo seleccionado no tiene un formato valido")
                 return
@@ -55,7 +56,7 @@ class Grafo:
         else:
             # Inicialización de atributos
             self.n = int(init[0])
-            self.RC = int(init[1]) + 5
+            self.RC = int(init[1])
             self.pos = {i: (inf, inf) for i in range(self.n)}
             self.pos[0] = (uniform(0, 100), uniform(0, 100))
             self.adjM = np.zeros((self.n, self.n), int)
@@ -76,7 +77,7 @@ class Grafo:
                     for j in range(self.n):
                         if self.pos[j] != (inf, inf) and j != i:
                             dij = dist(self.pos[i], self.pos[j])
-                            if dij <= self.RC:
+                            if dij <= (self.RC + 5):
                                 flag = False
                                 break
 
@@ -85,7 +86,7 @@ class Grafo:
                 self.nodes[i]["pos"] = self.pos[i]
                 for j in range(self.n):
                     dij = dist(self.pos[i], self.pos[j])
-                    if dij <= self.RC and i != j:
+                    if (dij <= (self.RC + 5)) and i != j:
                         self.adjM[i, j] = 1
                         self.nodes[i]["adjList"][j] = 1
 
@@ -106,12 +107,11 @@ class Grafo:
         json.dump(self.graph_data, file)
 
     # Función que actualiza el valor de infección de cada nodo
-    # v : np.array
-    #     Valores para la iteración i
-    def updateValue(self, v: np.array) -> None:
+    def updateValue(self, v: np.array, test: bool) -> None:
         nx.set_node_attributes(
             self.G, {i: v[i] for i in range(len(v))}, name='value')
-        self.ventana.grafica()
+        if not test:
+            self.ventana.grafica()
 
     # Función que devuelve, para el nodo que recibe por parámetro, sus nodos vecinos infectados
     def get_infected_neigboors(self, root) -> list:
