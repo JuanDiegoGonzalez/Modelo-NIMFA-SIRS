@@ -209,10 +209,11 @@ class Ventana:
 
     # Función que carga un modelo de un archivo .txt generado previamente
     def cargarModelo(self):
-        if hasattr(self, 'canvas'):
-            self.canvas.get_tk_widget().place_forget()
         filename = askopenfilename(initialdir='.', filetypes=(('Archivos de texto', '*.txt'),))
         if filename:
+            if hasattr(self, 'canvas'):
+                self.canvas.get_tk_widget().place_forget()
+
             file = open(filename)
 
             n = file.readline()
@@ -223,32 +224,36 @@ class Ventana:
                 path_grafo += "{}/".format(path[i])
             self.Graph = Grafo(1, ["{}{}nodos{}densidad.json".format(path_grafo, n[:-1], RC[:-1])], self)
 
-            params = [float(file.readline()[:-1]), float(file.readline()[:-1]), float(file.readline()[:-1]),
-                      int(file.readline()[:-1].split(".")[0])]
-            for i in range(len(self.parametros)):
-                self.parametros[i].configure(state='normal')
-                self.parametros[i].delete(0, tk.END)
-                self.parametros[i].insert(0, params[i])
-                self.parametros[i].configure(state='readonly')
+            try:
+                params = [float(file.readline()[:-1]), float(file.readline()[:-1]), float(file.readline()[:-1]),
+                          int(file.readline()[:-1].split(".")[0])]
+                for i in range(len(self.parametros)):
+                    self.parametros[i].configure(state='normal')
+                    self.parametros[i].delete(0, tk.END)
+                    self.parametros[i].insert(0, params[i])
+                    self.parametros[i].configure(state='readonly')
 
-            self.Model = Modelo(self.Graph.adjM, self.Graph, params)
-            self.Model.t = params[3]
-            file.readline()
-            for i in range(params[3]):
-                self.Model.history.append([float(i) for i in file.readline()[:-1].replace("[", "").replace("]", "")
-                                          .replace(" ", "").split(",")])
+                self.Model = Modelo(self.Graph.adjM, self.Graph, params)
+                self.Model.t = params[3]
+                file.readline()
+                for i in range(params[3]):
+                    self.Model.history.append([float(i) for i in file.readline()[:-1].replace("[", "").replace("]", "")
+                                              .replace(" ", "").split(",")])
 
-            height = 5 if self.ajuste_ventana == 0 else 4
-            self.fig = plt.figure(figsize=(8, height), dpi=100)
-            self.canvas = FigureCanvasTkAgg(self.fig, self.window)
-            self.canvas.get_tk_widget().place(x=300, y=0)
-            nx.set_node_attributes(self.Graph.G, {i: self.Model.history[self.Model.t][i] for i in
-                                                  range(len(self.Model.history[self.Model.t]))},
-                                   name='value')
-            self.grafica()
+                height = 5 if self.ajuste_ventana == 0 else 4
+                self.fig = plt.figure(figsize=(8, height), dpi=100)
+                self.canvas = FigureCanvasTkAgg(self.fig, self.window)
+                self.canvas.get_tk_widget().place(x=300, y=0)
+                nx.set_node_attributes(self.Graph.G, {i: self.Model.history[self.Model.t][i] for i in
+                                                      range(len(self.Model.history[self.Model.t]))},
+                                       name='value')
+                self.grafica()
 
-            self.quitarBotonesPre()
-            self.cargarBotonesPost()
+                self.quitarBotonesPre()
+                self.cargarBotonesPost()
+
+            except ValueError:
+                ...
 
     # Función que guarda el modelo actual en un archivo .txt
     def guardarModelo(self):

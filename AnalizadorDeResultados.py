@@ -1,3 +1,9 @@
+# ----------------------------------------------------
+# Aplicación auxiliar para el análisis de resultados
+# Realizado por: Juan Diego González Gómez
+# ----------------------------------------------------
+
+# -------------------- Imports -----------------------
 import numpy as np
 import tkinter as tk
 
